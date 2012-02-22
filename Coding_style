@@ -1,0 +1,55 @@
+This project will follow some coding style rules as follows.
+
+For referrence use the link:
+http://geosoft.no/development/cppstyle.html
+
+0) File content must be kept within 80 columns!
+
+1) Names representing types must be in mixed case starting with upper case.
+    e.g.: Line, SavingsAccount
+
+2) Variable names must be in mixed case starting with lower case.
+    e.g.: line, savingsAccount
+
+3) Named constants (including enumeration values) must be all uppercase 
+using underscore to separate words.
+    e.g.: MAX_ITERATIONS, COLOR_RED, PI
+
+4)  Names representing methods or functions must be verbs and written in 
+mixed case starting with lower case.
+    e.g.: getName(), computerTotalWidth()
+
+5) Names representing namespaces should be all lowercase.
+    e.g.: model::analyzer, io::iomanager, common::math::geometry
+
+6) Names representing template types should be a single uppercase letter.
+    e.g.:   template<class T> ...
+            template<class C, class D> ...
+
+7) Use comments wth /** */ before class or functions description
+    e.g.:
+    /** 
+     * Description for MyClsas
+     * on many lines
+     */
+    class MyClass
+    {
+        ...
+    }
+
+8) For classes and functions use the above layout and for other blocks use
+a layout like in the following example:
+    // Next is a block of code
+    if (condition) {
+        statements;
+    }
+    else if (condition) {
+        statements;
+    }
+
+    // The same for loops (while, for, do-while)
+    for (init; condition; update) {
+        statements;
+    }
+
+Have a nice code!
