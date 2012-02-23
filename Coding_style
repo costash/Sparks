@@ -5,7 +5,7 @@ http://geosoft.no/development/cppstyle.html
 
 0) File content must be kept within 80 columns!
 
-00) Use TAB for indentation, not spaces.
+00) Use 4 spaces for indentation, instead of TABs.
 
 1) Names representing types must be in mixed case starting with upper case.
     e.g.: Line, SavingsAccount
