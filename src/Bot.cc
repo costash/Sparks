@@ -42,7 +42,8 @@ void Bot::makeMoves()
             if(!state.grid[loc.row][loc.col].isWater)
             {
                 state.makeMove(state.myAnts[ant], d);
-                break;
+                continue;
+//                break;
             }
 //        }
     }
