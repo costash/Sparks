@@ -36,16 +36,24 @@ void Bot::makeMoves()
     {
 //        for(int d = 0; d < TDIRECTIONS; d++)
 //        {
-            int d = rand() % 4;
-            Location loc = state.getLocation(state.myAnts[ant], d);
+//            int d = rand() % 4;
+//            Location loc = state.getLocation(state.myAnts[ant], d);
 
-            if(!state.grid[loc.row][loc.col].isWater)
-            {
-                state.makeMove(state.myAnts[ant], d);
-                continue;
+//            if(!state.grid[loc.row][loc.col].isWater)
+//            {
+//                state.makeMove(state.myAnts[ant], d);
 //                break;
-            }
+//            }
 //        }
+        int d = rand() % 4;
+        Location loc = state.getLocation(state.myAnts[ant], d);
+        
+        while(state.grid[loc.row][loc.col].isWater)
+        {
+            d = rand() % 4;
+            loc = state.getLocation(state.myAnts[ant], d);
+        }
+        state.makeMove( state.myAnts[ant], d );
     }
 
     state.bug << "time taken: " << state.timer.getTime() << "ms" << endl << endl;

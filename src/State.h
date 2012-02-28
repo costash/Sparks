@@ -9,6 +9,7 @@
 #include <vector>
 #include <queue>
 #include <stack>
+#include <algorithm>
 #include <stdint.h>
 
 #include "Timer.h"
