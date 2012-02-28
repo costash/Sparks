@@ -32,11 +32,10 @@ void Bot::makeMoves()
     state.bug << state << endl;
 
     //picks out moves for each ant
-    for(int ant = 0; ant < (int) state.myAnts.size(); ant++)
+    for(int ant=0; ant<(int)state.myAnts.size(); ant++)
     {
-//        for(int d = 0; d < TDIRECTIONS; d++)
-//        {
-            int d = rand() % 4;
+        for(int d=0; d<TDIRECTIONS; d++)
+        {
             Location loc = state.getLocation(state.myAnts[ant], d);
 
             if(!state.grid[loc.row][loc.col].isWater)
@@ -44,7 +43,7 @@ void Bot::makeMoves()
                 state.makeMove(state.myAnts[ant], d);
                 break;
             }
-//        }
+        }
     }
 
     state.bug << "time taken: " << state.timer.getTime() << "ms" << endl << endl;
