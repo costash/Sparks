@@ -1,4 +1,5 @@
 #include "Bot.h"
+#include "BfsQueueElement.h"
 
 using namespace std;
 
@@ -32,29 +33,18 @@ void Bot::makeMoves()
     state.bug << state << endl;
 
     //picks out moves for each ant
-   /* for(int ant = 0; ant < (int) state.myAnts.size(); ant++)
-    {
-        int d = rand() % TDIRECTIONS;
-        Location loc = state.getLocation(state.myAnts[ant], d);
-        
-        while(state.grid[loc.row][loc.col].isWater)
-        {
-            d = rand() % TDIRECTIONS;
-            loc = state.getLocation(state.myAnts[ant], d);
-        }
-        state.makeMove( state.myAnts[ant], d );
-    }*/
-    explore();
+    exploreFood();
 
     state.bug << "time taken: " << state.timer.getTime() << "ms" << endl << endl;
 };
 
 //explore for food
-void Bot::explore()
+void Bot::exploreFood()
 {
     Location foodLoc, currentLoc, newLoc;
     std::queue<Location> foodQueue;
     std::vector<std::vector<bool> > visited( state.rows, std::vector<bool>(state.cols, 0) );
+    std::vector<bool> eaten( state.food.size(), 0);
        
     for(int i = 0; i < (int) state.food.size(); ++i)
     {
@@ -63,23 +53,21 @@ void Bot::explore()
         visited[foodLoc.row][foodLoc.col] = 1;
     }
     
-    while ( !foodQueue.empty() ) 
-    {
-        currentLoc = foodQueue.front();
-        foodQueue.pop();
-            
-        for ( int d = 0; d < TDIRECTIONS; ++d )
-        {
-            newLoc = state.getLocation(currentLoc, d);
+	while ( !foodQueue.empty() ) 
+   	{
+    	currentLoc = foodQueue.front();
+       	foodQueue.pop();
+       	            
+       	for ( int d = 0; d < TDIRECTIONS; ++d )
+       	{
+       		newLoc = state.getLocation(currentLoc, d);
                 
-            if (!visited[newLoc.row][newLoc.col])
-            	if(state.grid[newLoc.row][newLoc.col].isVisible)
-            	{
-	            	if(!state.grid[newLoc.row][newLoc.col].isWater &&
-	            	   state.grid[newLoc.row][newLoc.col].ant == -1	)
-            		{
-                    //TODO Insert in a matrix here, the level...
-                		foodQueue.push(newLoc);
+        	if (!visited[newLoc.row][newLoc.col])
+        		if(state.grid[newLoc.row][newLoc.col].isVisible)
+           		{
+	           		if(!state.grid[newLoc.row][newLoc.col].isWater) 
+           			{
+               			foodQueue.push( newLoc );
                 		visited[newLoc.row][newLoc.col] = 1;
             		}
             		
@@ -93,13 +81,16 @@ void Bot::explore()
             				case 2: antDir = 0;break;
             				case 3: antDir = 1;break;
             			}
-            			state.makeMove( newLoc, antDir);
-            			//TODO: Find a way to stop if every piece of food has an ant coming
+            			
+            			if( state.grid[currentLoc.row][currentLoc.col].ant == -1 )
+            				state.makeMove( newLoc, antDir);
+            			
             		}
-        	}
-	}
+        		}
+		}
     }
     
+    	
 }
 
 //finishes the turn
