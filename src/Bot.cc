@@ -34,23 +34,12 @@ void Bot::makeMoves()
     //picks out moves for each ant
     for(int ant = 0; ant < (int) state.myAnts.size(); ant++)
     {
-//        for(int d = 0; d < TDIRECTIONS; d++)
-//        {
-//            int d = rand() % 4;
-//            Location loc = state.getLocation(state.myAnts[ant], d);
-
-//            if(!state.grid[loc.row][loc.col].isWater)
-//            {
-//                state.makeMove(state.myAnts[ant], d);
-//                break;
-//            }
-//        }
-        int d = rand() % 4;
+        int d = rand() % TDIRECTIONS;
         Location loc = state.getLocation(state.myAnts[ant], d);
         
         while(state.grid[loc.row][loc.col].isWater)
         {
-            d = rand() % 4;
+            d = rand() % TDIRECTIONS;
             loc = state.getLocation(state.myAnts[ant], d);
         }
         state.makeMove( state.myAnts[ant], d );
@@ -58,6 +47,42 @@ void Bot::makeMoves()
 
     state.bug << "time taken: " << state.timer.getTime() << "ms" << endl << endl;
 };
+
+//explore for food
+void Bot::explore()
+{
+    Location foodLoc, currentLoc, newLoc;
+    std::queue<Location> foodQueue;
+    
+    for(int i = 0; i < (int) state.food.size(); ++i)
+    {
+        foodLoc = state.food[i];
+        foodQueue.push(foodLoc);
+        
+        std::vector<std::vector<bool> > visited( state.rows, std::vector<bool>(state.cols, 0) );
+        
+        visited[foodLoc.row][foodLoc.col] = 1;
+        
+        while ( !foodQueue.empty() ) {
+            currentLoc = foodQueue.front();
+            foodQueue.pop();
+            
+            for ( int d = 0; d < TDIRECTIONS; ++d )
+            {
+                newLoc = state.getLocation(currentLoc, d);
+                
+                if (!visited[newLoc.row][newLoc.col])
+                {
+                    //TODO Insert in a matrix here, the level...
+                    foodQueue.push(newLoc);
+                }
+                
+                visited[newLoc.row][newLoc.col] = 1;
+            }
+            
+        }
+    }
+}
 
 //finishes the turn
 void Bot::endTurn()
