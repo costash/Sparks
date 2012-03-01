@@ -9,7 +9,7 @@
 struct Square
 {
     bool isVisible, isWater, isHill, isFood;
-    int ant, hillPlayer, inMyAnts;	//indice in vect myAnts
+    int ant, hillPlayer, inMyAnts;  //inMyAnts is index for myAnts vector
     std::vector<int> deadAnts;
 
     Square()

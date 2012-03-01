@@ -5,20 +5,20 @@
 
 struct BfsQueueElement
 {
-	Location loc;
-	int root; //indicele radacinii, punctul de plecare
-	
-	BfsQueueElement( Location l, int r)
-	{
-		loc = l;
-		root = r;
-	}
-	
-	BfsQueueElement()
-	{
-		loc = Location();
-		root = -1;
-	}
+    Location loc;
+    int root;   //root index, starting point
+    
+    BfsQueueElement( Location l, int r)
+    {
+        loc = l;
+        root = r;
+    }
+    
+    BfsQueueElement()
+    {
+        loc = Location();
+        root = -1;
+    }
 };
 
 #endif
