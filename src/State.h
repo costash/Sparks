@@ -11,6 +11,7 @@
 #include <stack>
 #include <algorithm>
 #include <stdint.h>
+#include <map>
 
 #include "Timer.h"
 #include "Bug.h"

@@ -1,0 +1,24 @@
+#ifndef BFSQUEUEELEMENT_H_
+#define BFSQUEUEELEMENT_H_
+
+#include "Location.h"
+
+struct BfsQueueElement
+{
+	Location loc;
+	int root; //indicele radacinii, punctul de plecare
+	
+	BfsQueueElement( Location l, int r)
+	{
+		loc = l;
+		root = r;
+	}
+	
+	BfsQueueElement()
+	{
+		loc = Location();
+		root = -1;
+	}
+};
+
+#endif

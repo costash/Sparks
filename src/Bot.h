@@ -9,14 +9,14 @@
 struct Bot
 {
     State state;
-
+    
     Bot();
 
     void playGame();    //plays a single game of Ants
 
     void makeMoves();   //makes moves for a single turn
 
-    void explore();     //explore for food
+    void exploreFood(std::vector<bool>);     //explore for food
 
     void endTurn();     //indicates to the engine that it has made its moves
 };

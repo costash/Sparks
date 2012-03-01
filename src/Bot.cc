@@ -33,31 +33,37 @@ void Bot::makeMoves()
     state.bug << state << endl;
 
     //picks out moves for each ant
-    exploreFood();
+    std::vector<bool> used( state.myAnts.size(), 0);
+    exploreFood(used);
+
 
     state.bug << "time taken: " << state.timer.getTime() << "ms" << endl << endl;
 };
 
 //explore for food
-void Bot::exploreFood()
+void Bot::exploreFood(std::vector<bool> used)
 {
     Location foodLoc, currentLoc, newLoc;
-    std::queue<Location> foodQueue;
+    std::queue<BfsQueueElement> foodQueue;
     std::vector<std::vector<bool> > visited( state.rows, std::vector<bool>(state.cols, 0) );
     std::vector<bool> eaten( state.food.size(), 0);
+    BfsQueueElement elem;
        
     for(int i = 0; i < (int) state.food.size(); ++i)
     {
         foodLoc = state.food[i];
-        foodQueue.push(foodLoc);
+        foodQueue.push(BfsQueueElement( foodLoc, i));
         visited[foodLoc.row][foodLoc.col] = 1;
     }
     
 	while ( !foodQueue.empty() ) 
    	{
-    	currentLoc = foodQueue.front();
+    	elem = foodQueue.front();
+    	currentLoc = elem.loc;
        	foodQueue.pop();
        	            
+       	if(eaten[elem.root])continue;		//daca am trimis o furnica spre mancare, nu mai continui bfs-ul
+       	
        	for ( int d = 0; d < TDIRECTIONS; ++d )
        	{
        		newLoc = state.getLocation(currentLoc, d);
@@ -67,11 +73,12 @@ void Bot::exploreFood()
            		{
 	           		if(!state.grid[newLoc.row][newLoc.col].isWater) 
            			{
-               			foodQueue.push( newLoc );
+               			foodQueue.push( BfsQueueElement( newLoc, elem.root) );
                 		visited[newLoc.row][newLoc.col] = 1;
             		}
             		
-            		if(state.grid[newLoc.row][newLoc.col].ant == 0)	//our ant is here
+            		if(state.grid[newLoc.row][newLoc.col].ant == 0 &&
+            			used[state.grid[newLoc.row][newLoc.col].inMyAnts] == 0)	//our ant is here and it's not used
             		{
             			int antDir;
             			switch(d)
@@ -83,7 +90,11 @@ void Bot::exploreFood()
             			}
             			
             			if( state.grid[currentLoc.row][currentLoc.col].ant == -1 )
+            			{
             				state.makeMove( newLoc, antDir);
+            				used[state.grid[newLoc.row][newLoc.col].inMyAnts] = 1;
+            				eaten[elem.root] = 1;
+            			}
             			
             		}
         		}
