@@ -62,11 +62,13 @@ void Bot::exploreFood(std::vector<bool> used)
         currentLoc = elem.loc;
         foodQueue.pop();
 
-        if(eaten[elem.root])continue;   //if an ant is sent to food, the BFS is ended
+        if(eaten[elem.root])
+            continue;   //if an ant is sent to food, the BFS is ended
 
         for ( int d = 0; d < TDIRECTIONS; ++d )
         {
-        newLoc = state.getLocation(currentLoc, d);
+            newLoc = state.getLocation(currentLoc, d);
+
             if (!visited[newLoc.row][newLoc.col])
                 if(state.grid[newLoc.row][newLoc.col].isVisible)
                 {
@@ -82,10 +84,10 @@ void Bot::exploreFood(std::vector<bool> used)
                         int antDir;
                         switch(d)
                         {
-                            case 0: antDir = 2;break;
-                            case 1: antDir = 3;break;
-                            case 2: antDir = 0;break;
-                            case 3: antDir = 1;break;
+                            case 0: antDir = 2; break;
+                            case 1: antDir = 3; break;
+                            case 2: antDir = 0; break;
+                            case 3: antDir = 1; break;
                         }
 
                         if( state.grid[currentLoc.row][currentLoc.col].ant == -1 )
