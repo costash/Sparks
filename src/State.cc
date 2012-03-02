@@ -104,6 +104,8 @@ void State::updateVisionInformation()
             }
         }
     }
+    
+    used.assign( myAnts.size(), 0 );    // init with 0 the used vector
 };
 
 /*

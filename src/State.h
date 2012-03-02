@@ -44,6 +44,7 @@ struct State
 
     std::vector<std::vector<Square> > grid;
     std::vector<Location> myAnts, enemyAnts, myHills, enemyHills, food;
+    std::vector<bool> used;
 
     Timer timer;
     Bug bug;

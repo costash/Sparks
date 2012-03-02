@@ -33,15 +33,19 @@ void Bot::makeMoves()
     state.bug << state << endl;
 
     //picks out moves for each ant
-    std::vector<bool> used( state.myAnts.size(), 0);
-    exploreFood(used);
+    //std::vector<bool> used( state.myAnts.size(), 0);
+    //exploreFood(used);
+    exploreFood();
+    //exploreMap(used);
+    exploreMap();
 
 
     state.bug << "time taken: " << state.timer.getTime() << "ms" << endl << endl;
 };
 
 //explore for food
-void Bot::exploreFood(std::vector<bool> used)
+//void Bot::exploreFood(std::vector<bool> used)
+void Bot::exploreFood( )
 {
     Location foodLoc, currentLoc, newLoc;
     std::queue<BfsQueueElement> foodQueue;
@@ -79,7 +83,7 @@ void Bot::exploreFood(std::vector<bool> used)
                     }
 
                     if(state.grid[newLoc.row][newLoc.col].ant == 0 &&
-                        used[state.grid[newLoc.row][newLoc.col].inMyAnts] == 0) //our ant is here and it's not used
+                        state.used[state.grid[newLoc.row][newLoc.col].inMyAnts] == 0) //our ant is here and it's not used
                     {
                         int antDir;
                         switch(d)
@@ -89,16 +93,49 @@ void Bot::exploreFood(std::vector<bool> used)
                             case 2: antDir = 0; break;
                             case 3: antDir = 1; break;
                         }
+                        state.grid[currentLoc.row][currentLoc.col].lastVisit = 0;
 
                         if( state.grid[currentLoc.row][currentLoc.col].ant == -1 )
                         {
                             state.makeMove( newLoc, antDir);
-                            used[state.grid[newLoc.row][newLoc.col].inMyAnts] = 1;
+                            state.used[state.grid[newLoc.row][newLoc.col].inMyAnts] = 1;
                             eaten[elem.root] = 1;
+                            state.grid[currentLoc.row][currentLoc.col].lastVisit++;
+                            state.grid[newLoc.row][newLoc.col].lastVisit = 0;
                         }
 
                     }
             }
+        }
+    }
+};
+
+// explore map
+//void Bot::exploreMap ( std::vector<bool> used )
+void Bot::exploreMap()
+{
+    for ( int i = 0; i < state.used.size(); ++i )
+    {
+        state.bug << "Used[" << i << "]: " << state.used[i] <<"\t";
+        if ( state.used[i] == 0 )
+        {
+            int d, stop = 0;
+            Location currentLoc, newLoc;
+            currentLoc = state.myAnts[i];
+
+            do
+            {
+                d = rand() % 4;
+                newLoc = state.getLocation( currentLoc, d );
+                stop++;
+            }while( (state.grid[newLoc.row][newLoc.col].isWater || 
+                    state.grid[newLoc.row][newLoc.col].ant == 0) && stop < 10);
+
+            if (stop == 10)
+                continue;
+            state.bug << "Ant location:>>> row: " << state.myAnts[i].row << " col:" << state.myAnts[i].col << " <<< ant: " << state.grid[state.myAnts[i].row][state.myAnts[i].col].ant << endl;
+            state.used[i] = 1;
+            state.makeMove ( currentLoc, d );
         }
     }
 };

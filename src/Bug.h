@@ -4,7 +4,7 @@
 #include <fstream>
 
 #ifndef DEBUG
-    //#define DEBUG
+    #define DEBUG
 #endif
 
 /*
