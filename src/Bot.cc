@@ -32,20 +32,15 @@ void Bot::makeMoves()
     state.bug << "turn " << state.turn << ":" << endl;
     state.bug << state << endl;
 
-    //picks out moves for each ant
-    //std::vector<bool> used( state.myAnts.size(), 0);
-    //exploreFood(used);
     exploreFood();
-    //exploreMap(used);
     exploreMap();
 
 
     state.bug << "time taken: " << state.timer.getTime() << "ms" << endl << endl;
 };
 
-//explore for food
-//void Bot::exploreFood(std::vector<bool> used)
-void Bot::exploreFood( )
+//assign ants to food and move to it
+void Bot::exploreFood()
 {
     Location foodLoc, currentLoc, newLoc;
     std::queue<BfsQueueElement> foodQueue;
@@ -83,7 +78,8 @@ void Bot::exploreFood( )
                     }
 
                     if(state.grid[newLoc.row][newLoc.col].ant == 0 &&
-                        state.used[state.grid[newLoc.row][newLoc.col].inMyAnts] == 0) //our ant is here and it's not used
+                        state.used[state.grid[newLoc.row][newLoc.col].inMyAnts] == 0) 
+                        //our ant is here and it's not used
                     {
                         int antDir;
                         switch(d)
@@ -110,8 +106,7 @@ void Bot::exploreFood( )
     }
 };
 
-// explore map
-//void Bot::exploreMap ( std::vector<bool> used )
+//explore map
 void Bot::exploreMap()
 {
     for ( int i = 0; i < state.used.size(); ++i )
@@ -133,7 +128,9 @@ void Bot::exploreMap()
 
             if (stop == 10)
                 continue;
-            state.bug << "Ant location:>>> row: " << state.myAnts[i].row << " col:" << state.myAnts[i].col << " <<< ant: " << state.grid[state.myAnts[i].row][state.myAnts[i].col].ant << endl;
+            state.bug << "Ant location:>>> row: " << state.myAnts[i].row << \
+                " col:" << state.myAnts[i].col << " <<< ant: " << \
+                state.grid[state.myAnts[i].row][state.myAnts[i].col].ant << endl;
             state.used[i] = 1;
             state.makeMove ( currentLoc, d );
         }
