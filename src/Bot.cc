@@ -36,7 +36,6 @@ void Bot::makeMoves()
     exploreFood();
     exploreMap();
 
-
     state.bug << "time taken: " << state.timer.getTime() << "ms" << endl << endl;
 };
 
@@ -136,6 +135,7 @@ void Bot::exploreMap()
                 {
                     antQueue.push( nLoc );
                 }
+                
                 visited[nLoc.row][nLoc.col] = 1;
 
 
@@ -166,6 +166,7 @@ void Bot::exploreMap()
         if( !exitBfs )
         {
             nLoc = state.getLocation( sLoc, sDir );
+            
             if( state.grid[nLoc.row][nLoc.col].isWater == 0 &&
                     state.grid[nLoc.row][nLoc.col].ant != 0 )
             {
