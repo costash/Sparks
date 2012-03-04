@@ -120,7 +120,7 @@ void Bot::exploreMap()
         visited[sLoc.row][sLoc.col] = 1;
         bool exitBfs = false;
 
-        //TODO improve function with more clear directions for each ant
+        //find directions for each ant
         while( !antQueue.empty() && !exitBfs )
         {
             cLoc = antQueue.front();
@@ -162,7 +162,8 @@ void Bot::exploreMap()
                 }
             }
         }
-        //TODO this is just a temporary sollution for exiting the loop and move
+        
+        //this is just a temporary solution for exiting the loop and move
         if( !exitBfs )
         {
             nLoc = state.getLocation( sLoc, sDir );
