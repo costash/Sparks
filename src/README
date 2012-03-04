@@ -27,8 +27,8 @@ a fost vizitata, si daca da, de cat timp nu a mai fost o furnica acolo.
 
     **Structura proiectului
 
-        Am lucrat pe scheletul de cod de pe aichallenge si cu /tools de la echipa de
-la echipa de PA. Am pastrat comentariile in engleza.
+        Am lucrat pe scheletul de cod de pe aichallenge si cu /tools de la echipa de PA. 
+Am pastrat comentariile in engleza.
         In plus, am adaugat BfsQueueElement.h pentru BFS-ul din exploreFood().
 
         Schimbarile fata de scheletul initial au fost facute in fisierul Bot.cc
