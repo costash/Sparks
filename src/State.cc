@@ -36,6 +36,19 @@ void State::reset()
                 grid[row][col].reset();
 };
 
+//update lastVisit information for squares
+void State::updateLastVisit()
+{
+    for( int i = 0; i < grid.size(); ++i )
+        for( int j = 0; j < grid[i].size(); ++j )
+        {
+            if( grid[i][j].ant == 0 )
+                grid[i][j].lastVisit = 0;
+            else if( grid[i][j].lastVisit != -1 )
+                grid[i][j].lastVisit++;
+        }
+}
+
 //outputs move information to the engine
 void State::makeMove(const Location &loc, int direction)
 {

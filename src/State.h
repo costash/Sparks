@@ -44,7 +44,7 @@ struct State
 
     std::vector<std::vector<Square> > grid;
     std::vector<Location> myAnts, enemyAnts, myHills, enemyHills, food;
-    std::vector<bool> used;
+    std::vector<bool> used;     //wether an ant has a target or not
 
     Timer timer;
     Bug bug;
@@ -57,6 +57,8 @@ struct State
 
     void setup();
     void reset();
+
+    void updateLastVisit();
 
     void makeMove(const Location &loc, int direction);
 

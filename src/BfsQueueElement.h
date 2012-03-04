@@ -3,6 +3,9 @@
 
 #include "Location.h"
 
+/*
+    struct for an element in the BFS Queue
+*/
 struct BfsQueueElement
 {
     Location loc;

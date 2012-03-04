@@ -16,11 +16,9 @@ struct Bot
 
     void makeMoves();   //makes moves for a single turn
 
-//    void exploreFood(std::vector<bool>);     //explore for food
-    void exploreFood();
+    void exploreFood(); //assign ants to food and move to it
 
-//    void exploreMap ( std::vector<bool> );    //explore map
-    void exploreMap();
+    void exploreMap();  //explore map with unused ants
 
     void endTurn();     //indicates to the engine that it has made its moves
 };

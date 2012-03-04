@@ -21,4 +21,3 @@ clean:
 	-rm -f debug.txt
 
 .PHONY: all clean
-
