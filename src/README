@@ -1,0 +1,103 @@
+/**Echipa: Sparks
+ * Membri: 
+ *      Serban-Radoi Constantin (capitan)
+ *      Parcalabescu Maria
+ *      Oncioiu Raluca
+ *      Ivanica Gabriel
+ * Etapa1: 04.03.2012
+ */
+
+    **Abordare algoritmica
+
+        Pentru a colecta mancarea, am folosit un BFS plecand de la fiecare
+unitate catre furnici, iar in momentul in care am gasit una, am trimis-o catre
+ea, si am oprit BFS-ul, pentru a nu merge mai multe furnici spre aceeasi mancare.
+        In acelasi timp am evitat ca furnicile sa se omoare intre ele, punand
+conditia ca in locul unde se muta o furnica, sa nu fie alta.
+        Practic, la fiecare runda, se face un BFS pornind de la mancare catre
+furnici.
+
+        Pentru a explora harta, spre a gasi alte unitati de mancare, am folosit
+initial o functie care muta furnicile *neutilizate* in mod aleator, apoi insa
+am revenit asupra acesteia si am decis sa mutam furnicile spre zone marcate
+drept *necunoscute*, sau catre unele vizitate cel mai de de mult timp.
+        Momentan, se updateaza la fiecare runda informatia despre o celula, daca
+a fost vizitata, si daca da, de cat timp nu a mai fost o furnica acolo.
+
+
+    **Structura proiectului
+
+        Am lucrat pe scheletul de cod de pe aichallenge si cu /tools de la echipa de
+la echipa de PA. Am pastrat comentariile in engleza.
+        In plus, am adaugat BfsQueueElement.h pentru BFS-ul din exploreFood().
+
+        Schimbarile fata de scheletul initial au fost facute in fisierul Bot.cc
+in care am adaugat functiile pentru explorare si colectare a mancarii. Alte schimbari
+majore nu s-au produs.
+
+
+    **Limbajul de programare folosit
+
+        Am lucrat in C++, deoarece am considerat ca are toate structurile de date
+necesare pentru proiect. In plus, ruleaza mai repede decat Java.
+        Mai mult, acest proiect reprezinta o excelenta modalitate de a invata
+relativ repede acest limbaj de programare.
+
+
+    **Mediul de dezvoltare folosit
+
+        Fiecare membru a lucrat in gedit si/sau vim.
+
+
+    **Mod de compilare
+
+        S-a folosit makefile-ul implicit, deoarece nu am adaugat alte surse.
+
+    Comanda este:
+            make
+
+
+    **Mod de rulare
+
+        S-a folosit comanda implicita pentru fiecare harta:
+
+        ./playgame.py --log_dir game_logs -So --verbose --engine_seed 42
+--player_seed 0 --turns 100 --map_file CALE_CATRE_HARTA "./bot32" "./MyBot"
+| java -jar visualizer.jar
+
+
+    **Surse de inspiratie
+
+        Am luat idei din codul lui xathis[1], pentru a avea o idee de ansamblu
+asupra strategiei de joc. In cele din urma, ne-am folosit de BFS-ul din functia
+updateVisionInformation() din State.cc, pe care l-am imbunatatit pentru nevoile
+botului nostru.
+
+[1] http://xathis.com/posts/ai-challenge-2011-ants.html
+
+
+    **Contributiile fiecarui membru al echipei
+
+        Serban-Radoi Constantin (capitan):
+
+- am implementat exploreMap() intai random, apoi cu un pseudo-BFS
+- am facut ca vectorul used din exploreFood() sa poata fi folosit si la
+iesirea din functie, deoarece multe dintre furnici stateau pe loc; astfel, s-a
+dublat numarul de furnici per fiecare harta folosind cu functia exploreMap()
+pentru furnicile care nu erau _used_
+
+        Maria Parcalabescu:
+
+- am implementat functia exploreFood(), prin imbunatatirea BFS-ului de la care
+s-a pornit
+
+        Oncioiu Raluca:
+
+- am implementat in paralel functiile exploreFood() si exploreMap(); in cele din
+urma, am renuntat la codul meu, deoarece nu genera suficiente furnici
+- am scris README-ul
+
+        Ivanica Gabriel:
+
+- am organizat fisierele de pe github [sursa noastra de version control system]
+
