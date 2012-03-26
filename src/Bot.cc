@@ -116,32 +116,43 @@ void Bot::exploreFood()
 
 
 
-void Bot::exploreMap3() {
+void Bot::exploreMap3()
+{
 	FILE *out  = fopen("debug3.txt","a");
 	int MAX, SUM, depth, steps = 11, direction;
 	State::explore Element;
     queue< State::explore > Inspect;
     Location sLoc, cLoc, nLoc;
 
-    for( unsigned int i = 0; i < state.used.size(); i++ ) {
+    for( unsigned int i = 0; i < state.used.size(); i++ )
+    {
+    	if (state.used[i] == true)
+			continue;
+
 		MAX = 0;
         sLoc = state.myAnts[i];
+
+		fprintf(out,"Furnica %d - coord x=%d , y=%d \t", i, sLoc.row, sLoc.col);
+
         Element.loc = sLoc;
         Element.depth = 1;
 
         vector<vector<bool> > visited (state.rows, vector<bool>(state.cols, 0));
 		visited[sLoc.row][sLoc.col] = true;
 
-        for (int d=0; d<4; d++) {
+        for (int d=0; d<4; d++)
+        {
 			nLoc = state.getLocation(sLoc, d);
-			if (state.grind[nLoc.row][nLoc.col].isWater == false) {
+			if (state.grid[nLoc.row][nLoc.col].isWater == false)
+			{
 				Element.loc = nLoc;
 				Element.direction = d;
 				Inspect.push(Element);
 			}
         }
 
-        while (Inspect.size()) {
+        while (Inspect.size())
+        {
 
 			fprintf(out,"intra in while\n");
 
@@ -154,19 +165,23 @@ void Bot::exploreMap3() {
 			fprintf(out,"\t Coord: x=%d \t y=%d\n", cLoc.row , cLoc.col);
 			fflush(out);
 
-			if ( depth == steps-1) {
+			if ( depth == steps-1)
+			{
 				SUM = 0;
-				for( int d = 0; d < TDIRECTIONS; ++d ) {
+				for( int d = 0; d < TDIRECTIONS; ++d )
+				{
 					nLoc = state.getLocation(cLoc, d);
 					if (state.grid[nLoc.row][nLoc.col].isWater == false &&
-						visited[nLoc.row][nLoc.col] == true) {
+						visited[nLoc.row][nLoc.col] == true)
+					{
 						SUM += state.grid[nLoc.row][nLoc.col].history;
 					}
 				}
 
 				fprintf(out,"Suma : %d \t Coordonate: x=%d \t y=%d \n",SUM, cLoc.row, cLoc.col);
 
-				if (SUM>MAX) {
+				if (SUM>MAX)
+				{
 					direction = Element.direction;
 					MAX = SUM;
 				}
@@ -176,109 +191,34 @@ void Bot::exploreMap3() {
 
 			depth++;
 
-            for( int d=0; d < TDIRECTIONS; ++d ) {
+            for( int d=0; d < TDIRECTIONS; ++d )
+            {
                 nLoc = state.getLocation( cLoc, d );
 				fprintf(out,"Coordonate: x=%d \t y=%d \t", nLoc.row, nLoc.col);
 				fprintf(out,"------ vizitat: %d ",(int)visited[nLoc.row][nLoc.col]);
 
 				if (state.grid[nLoc.row][nLoc.col].isWater == false &&
-					visited[nLoc.row][nLoc.col] == false) {
+					visited[nLoc.row][nLoc.col] == false)
+				{
 					visited[nLoc.row][nLoc.col] = true ;
 					Element.loc = nLoc;
 					Element.depth = depth;
 					Inspect.push(Element);
 					state.grid[cLoc.row][cLoc.col].history = 0;
 					fprintf(out," ----- history: %d ", state.grid[cLoc.row][cLoc.col].history);
-					fprintf(out," ----- added -> step %d \n",depth);
+					fprintf(out," ----- added -> step %d",depth);
 					fflush(out);
 				}
+				fprintf(out,"\n");
             }
         }
 
+		fprintf(out,"Furnica muta : %d", direction);
         state.makeMove( sLoc, direction);
 
     }
     fclose(out);
 }
-
-
-
-//explore map with unused ants
-void Bot::exploreMap2()
-{
-    std::queue<Location> antQueue;
-    Location sLoc, cLoc, nLoc;
-    for( unsigned int i = 0; i < state.used.size(); ++i )
-    {
-        sLoc = state.myAnts[i];
-        antQueue.push( sLoc );
-        int sDir, oldestVisit = 0;
-
-        std::vector<std::vector<bool> > visited(state.rows, std::vector<bool>(state.cols, 0));
-        visited[sLoc.row][sLoc.col] = 1;
-        bool exitBfs = false;
-
-        //find directions for each ant
-        while( !antQueue.empty() && !exitBfs )
-        {
-            cLoc = antQueue.front();
-            antQueue.pop();
-
-            for( int d = 0; d < TDIRECTIONS; ++d )
-            {
-                nLoc = state.getLocation( cLoc, d );
-
-                if( !visited[nLoc.row][nLoc.col] &&
-                    state.grid[nLoc.row][nLoc.col].isVisible )
-                {
-                    antQueue.push( nLoc );
-                }
-
-                visited[nLoc.row][nLoc.col] = 1;
-
-
-                if( cLoc.row == sLoc.row && cLoc.col == sLoc.col &&
-                    state.grid[nLoc.row][nLoc.col].isWater == 0 &&
-                    state.grid[nLoc.row][nLoc.col].ant != 0 )
-                {
-                    //found a not visited place right from the start
-                    if( state.grid[nLoc.row][nLoc.col].lastVisit == -1 )
-                    {
-                        sDir = d;
-                        exitBfs = true;
-                        state.grid[nLoc.row][nLoc.col].lastVisit = 0;
-
-                        state.makeMove( sLoc, sDir );
-                        break;
-                    }
-
-                    //try to find the oldest not visited place near start
-                    if( state.grid[nLoc.row][nLoc.col].lastVisit > oldestVisit )
-                    {
-                        oldestVisit = state.grid[nLoc.row][nLoc.col].lastVisit;
-                        sDir = d;
-                    }
-                }
-            }
-        }
-
-        //this is just a temporary solution for exiting the loop and move
-        if( !exitBfs )
-        {
-            nLoc = state.getLocation( sLoc, sDir );
-
-            if( state.grid[nLoc.row][nLoc.col].isWater == 0 &&
-                    state.grid[nLoc.row][nLoc.col].ant != 0 )
-            {
-                state.grid[nLoc.row][nLoc.col].lastVisit = 0;
-                state.makeMove( sLoc, sDir );
-            }
-        }
-    }
-};
-
-
-
 
 //explore map with unused ants
 void Bot::exploreMap()
