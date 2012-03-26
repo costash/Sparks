@@ -9,7 +9,7 @@
 struct Bot
 {
     State state;
-    
+
     Bot();
 
     void playGame();    //plays a single game of Ants
@@ -20,7 +20,12 @@ struct Bot
 
     void exploreMap();  //explore map with unused ants
 
+    void exploreMap2();  //explore map with unused ants
+
+    void exploreMap3();  //explore map with unused ants
+
     void endTurn();     //indicates to the engine that it has made its moves
+
 };
 
 #endif //BOT_H_

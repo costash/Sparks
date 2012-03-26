@@ -20,6 +20,7 @@ State::~State()
 void State::setup()
 {
     grid = vector<vector<Square> >(rows, vector<Square>(cols, Square()));
+    initHistory();
 };
 
 //resets all non-water squares to land and clears the bots ant vector
@@ -36,11 +37,61 @@ void State::reset()
                 grid[row][col].reset();
 };
 
+
+
+void State::updateHistory() {
+    for(unsigned int i = 0; i < grid.size(); ++i )
+        for(unsigned int j = 0; j < grid[i].size(); ++j ) {
+				if(grid[i][j].isWater == false)
+					grid[i][j].history++;
+        }
+}
+
+
+void State::setReachableTiles() {
+	for (unsigned int i = 0; i<grid.size(); i++)
+		for (unsigned int j = 0; j<grid[i].size(); j++)
+			if (grid[i][j].history && grid[i][j].isVisible)
+					grid[i][j].history = 0;
+}
+
+
+void State::printHistory() {
+	FILE *out = fopen("map.txt","w");
+
+    for(unsigned int i = 0; i < grid.size(); ++i ) {
+		fprintf(out,"\n");
+        for(unsigned int j = 0; j < grid[i].size(); ++j ) {
+        	if (grid[i][j].isWater == true)
+				fprintf(out,"W");
+        	else
+        	if (grid[i][j].isFood == true)
+				fprintf(out,"F");
+			else
+			if (grid[i][j].isHill == true)
+				fprintf(out,"M");
+			else
+				if(grid[i][j].history > 10)
+				fprintf(out,"U");
+				else
+				fprintf(out,"%d",grid[i][j].history);
+				fprintf(out," ");
+        }
+    }
+    fclose(out);
+}
+
+void State::initHistory() {
+    for(unsigned int i = 0; i < grid.size(); ++i )
+        for(unsigned int j = 0; j < grid[i].size(); ++j )
+			grid[i][j].history=0;
+}
+
 //update lastVisit information for squares
 void State::updateLastVisit()
 {
-    for( int i = 0; i < grid.size(); ++i )
-        for( int j = 0; j < grid[i].size(); ++j )
+    for(unsigned int i = 0; i < grid.size(); ++i )
+        for(unsigned int j = 0; j < grid[i].size(); ++j )
         {
             if( grid[i][j].ant == 0 )
                 grid[i][j].lastVisit = 0;
@@ -117,7 +168,7 @@ void State::updateVisionInformation()
             }
         }
     }
-    
+
     used.assign( myAnts.size(), 0 );    // init with 0 the used vector
 };
 
@@ -239,7 +290,7 @@ istream& operator>>(istream &is, State &state)
                 if(player == 0)
                 {
                     state.myAnts.push_back(Location(row, col));
-                    state.grid[row][col].inMyAnts = state.myAnts.size() - 1;
+                    state.grid[row][col].indexAnt = state.myAnts.size() - 1;
                 }
                 else
                     state.enemyAnts.push_back(Location(row, col));

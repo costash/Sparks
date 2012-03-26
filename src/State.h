@@ -49,6 +49,13 @@ struct State
     Timer timer;
     Bug bug;
 
+
+	struct explore {
+		Location loc;
+		int depth;
+		int direction;
+	};
+
     /*
         Functions
     */
@@ -57,6 +64,11 @@ struct State
 
     void setup();
     void reset();
+
+	void initHistory();
+	void updateHistory();
+	void setReachableTiles();
+    void printHistory();
 
     void updateLastVisit();
 
