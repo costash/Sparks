@@ -166,11 +166,11 @@ void Bot::exploreMap3()
 			if ( depth == steps-1)
 			{
 				SUM = 0;
-				for( int d = 0; d <4; ++d )
+				for( int d = 0; d <4; d++ )
 				{
 					nLoc = state.getLocation(cLoc, d);
 					if (state.grid[nLoc.row][nLoc.col].isWater == false &&
-						visited[nLoc.row][nLoc.col] == true)
+						visited[nLoc.row][nLoc.col] == false)
 					{
 						SUM += state.grid[nLoc.row][nLoc.col].history;
 					}
