@@ -118,8 +118,8 @@ void Bot::exploreFood()
 
 void Bot::exploreMap3()
 {
-	FILE *out  = fopen("debug3.txt","a");
-	int MAX, SUM, depth, steps = 11, direction;
+	FILE *out  = fopen("moves.txt","a");
+	int MAX, SUM, depth, steps = 11, direction = -1, direction2 = 0;
 	State::explore Element;
     queue< State::explore > Inspect;
     Location sLoc, cLoc, nLoc;
@@ -133,8 +133,6 @@ void Bot::exploreMap3()
         sLoc = state.myAnts[i];
 
 		fprintf(out,"Furnica %d - coord x=%d , y=%d \t", i, sLoc.row, sLoc.col);
-
-        Element.loc = sLoc;
         Element.depth = 1;
 
         vector<vector<bool> > visited (state.rows, vector<bool>(state.cols, 0));
@@ -151,24 +149,24 @@ void Bot::exploreMap3()
 			}
         }
 
-        while (Inspect.size())
+        while (!Inspect.empty())
         {
 
-			fprintf(out,"intra in while\n");
+//			fprintf(out,"intra in while\n");
 
 			Element = Inspect.front();
 			cLoc = Element.loc;
 			depth = Element.depth;
 			Inspect.pop();
 
-			fprintf(out,"Element: ");
-			fprintf(out,"\t Coord: x=%d \t y=%d\n", cLoc.row , cLoc.col);
+//			fprintf(out,"Element: ");
+//			fprintf(out,"\t Coord: x=%d \t y=%d\n", cLoc.row , cLoc.col);
 			fflush(out);
 
 			if ( depth == steps-1)
 			{
 				SUM = 0;
-				for( int d = 0; d < TDIRECTIONS; ++d )
+				for( int d = 0; d <4; ++d )
 				{
 					nLoc = state.getLocation(cLoc, d);
 					if (state.grid[nLoc.row][nLoc.col].isWater == false &&
@@ -178,13 +176,13 @@ void Bot::exploreMap3()
 					}
 				}
 
-				fprintf(out,"Suma : %d \t Coordonate: x=%d \t y=%d \n",SUM, cLoc.row, cLoc.col);
-
-				if (SUM>MAX)
+//				fprintf(out,"Suma : %d \t Coordonate: x=%d \t y=%d \n",SUM, cLoc.row, cLoc.col);
+				if (SUM >= MAX)
 				{
 					direction = Element.direction;
 					MAX = SUM;
 				}
+				direction2 = Element.direction;
 
 				continue;
 			}
@@ -194,8 +192,8 @@ void Bot::exploreMap3()
             for( int d=0; d < TDIRECTIONS; ++d )
             {
                 nLoc = state.getLocation( cLoc, d );
-				fprintf(out,"Coordonate: x=%d \t y=%d \t", nLoc.row, nLoc.col);
-				fprintf(out,"------ vizitat: %d ",(int)visited[nLoc.row][nLoc.col]);
+//				fprintf(out,"Coordonate: x=%d \t y=%d \t", nLoc.row, nLoc.col);
+//				fprintf(out,"------ vizitat: %d ",(int)visited[nLoc.row][nLoc.col]);
 
 				if (state.grid[nLoc.row][nLoc.col].isWater == false &&
 					visited[nLoc.row][nLoc.col] == false)
@@ -205,16 +203,21 @@ void Bot::exploreMap3()
 					Element.depth = depth;
 					Inspect.push(Element);
 					state.grid[cLoc.row][cLoc.col].history = 0;
-					fprintf(out," ----- history: %d ", state.grid[cLoc.row][cLoc.col].history);
-					fprintf(out," ----- added -> step %d",depth);
-					fflush(out);
+//					fprintf(out," ----- history: %d ", state.grid[cLoc.row][cLoc.col].history);
+//					fprintf(out," ----- added -> step %d",depth);
+//					fflush(out);
 				}
-				fprintf(out,"\n");
+//				fprintf(out,"\n");
             }
         }
 
-		fprintf(out,"Furnica muta : %d", direction);
-        state.makeMove( sLoc, direction);
+		fprintf(out,"Furnica muta : %d \n", direction);
+		fflush(out);
+
+		if (direction == -1)
+			direction = direction2;
+		if (state.grid[sLoc.row][sLoc.col].ant == 0)
+			state.makeMove( sLoc, direction);
 
     }
     fclose(out);

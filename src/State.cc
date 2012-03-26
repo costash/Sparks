@@ -21,6 +21,9 @@ void State::setup()
 {
     grid = vector<vector<Square> >(rows, vector<Square>(cols, Square()));
     initHistory();
+	FILE *out  = fopen("moves.txt","w");
+	fclose(out);
+
 };
 
 //resets all non-water squares to land and clears the bots ant vector
@@ -62,6 +65,9 @@ void State::printHistory() {
     for(unsigned int i = 0; i < grid.size(); ++i ) {
 		fprintf(out,"\n");
         for(unsigned int j = 0; j < grid[i].size(); ++j ) {
+        	if (grid[i][j].ant == 0)
+				fprintf(out,"A");
+        	else
         	if (grid[i][j].isWater == true)
 				fprintf(out,"W");
         	else
@@ -85,6 +91,11 @@ void State::initHistory() {
     for(unsigned int i = 0; i < grid.size(); ++i )
         for(unsigned int j = 0; j < grid[i].size(); ++j )
 			grid[i][j].history=0;
+
+	FILE *out  = fopen("moves.txt","a");
+	fprintf(out,"\n TURN : %d\n", turn);
+	fclose(out);
+
 }
 
 //update lastVisit information for squares
