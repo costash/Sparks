@@ -71,7 +71,7 @@ struct State
 		int index;
 		int type;
 		int nextMove;
-	}
+	};
 
     /*
         Functions

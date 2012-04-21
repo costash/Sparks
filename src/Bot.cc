@@ -38,9 +38,9 @@ void Bot::makeMoves()
 	state.newTurn();
 	state.updateHistory();
 	state.setReachableTiles();
-	exploreMap();
-	sendToBorder();
 	exploreFood();
+	sendToBorder();
+	exploreMap();
 
 	if (state.turn == state.turns)
 		state.printHistory();
@@ -243,7 +243,8 @@ void Bot::sendToBorder()
     Location sLoc, cLoc, nLoc;
     queue < State::expBorder > findBorder;
 	State::expBorder Element;
-	FILE *out  = fopen("z_border.txt", "a");
+	FILE *out  = fopen("z_border.txt", "w");
+	out  = fopen("z_border.txt", "a");
 
 	/**	Set the visited matrix to 0
 	 **/
@@ -318,16 +319,22 @@ void Bot::sendToBorder()
 				state.used[Element.antIndex] = true;
 				fprintf(out," Trying to move ant %d in direction %d\n", Element.antIndex, Element.direction);
 				fflush(out);
-				state.makeMove( state.myAnts[Element.antIndex], Element.direction);
+				nLoc = state.getLocation( state.myAnts[Element.antIndex], Element.direction );
+				Square tile = state.grid[nLoc.row][nLoc.col];
+				if (tile.isWater == false)
+					state.makeMove( state.myAnts[Element.antIndex], Element.direction);
 			}
 		}
 	}
 
 	fprintf(out, "Turn %d \n\n\n", state.turn);
 	for (i=0; i<state.rows; i++) {
-		for (j=0; j<state.cols; j++)
+		for (j=0; j<state.cols; j++) {
 			if (state.grid[i][j].ant == 0)
-			fprintf(out, "%d ", visited[i][j]);
+				fprintf(out, "# ");
+			else
+				fprintf(out, "%d ", visited[i][j]);
+		}
 		fprintf(out, "\n");
 	}
 	fflush(out);
