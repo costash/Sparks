@@ -13,6 +13,7 @@ using namespace std;
     outlined on the specifications page at:
         http://www.ai-contest.com
 */
+
 int main(int argc, char *argv[])
 {
     cout.sync_with_stdio(0); //this line makes your bot faster

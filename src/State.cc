@@ -7,7 +7,7 @@ State::State()
 {
     gameover = 0;
     turn = 0;
-    bug.open("./debug.txt");
+    bug.open("z_debug.txt");
 };
 
 //deconstructor
@@ -20,10 +20,13 @@ State::~State()
 void State::setup()
 {
     grid = vector<vector<Square> >(rows, vector<Square>(cols, Square()));
-    initHistory();
-	FILE *out  = fopen("moves.txt","w");
-	fclose(out);
 
+	/** Initialize the incremental history for every tile **/
+    initHistory();
+
+    /** File Debugging clear **/
+	FILE *out  = fopen("z_moves.txt","w");
+	fclose(out);
 };
 
 //resets all non-water squares to land and clears the bots ant vector
@@ -41,6 +44,22 @@ void State::reset()
 };
 
 
+/*******************************************************************************
+ ---------------------------- Our Code IS DOWN ---------------------------------
+ *******************************************************************************/
+
+
+void State::initHistory() {
+    for(unsigned int i = 0; i < grid.size(); ++i )
+        for(unsigned int j = 0; j < grid[i].size(); ++j )
+			grid[i][j].history=0;
+
+	FILE *out  = fopen("moves.txt","a");
+	fprintf(out,"\n TURN : %d\n", turn);
+	fclose(out);
+
+}
+
 
 void State::updateHistory() {
     for(unsigned int i = 0; i < grid.size(); ++i )
@@ -50,17 +69,13 @@ void State::updateHistory() {
         }
 }
 
-
-void State::setReachableTiles() {
-	for (unsigned int i = 0; i<grid.size(); i++)
-		for (unsigned int j = 0; j<grid[i].size(); j++)
-			if (grid[i][j].history && grid[i][j].isVisible)
-					grid[i][j].history = 0;
+void State::newTurn() {
+   	used.assign( myAnts.size(), 0 );    // init with 0 the used vector
 }
 
 
 void State::printHistory() {
-	FILE *out = fopen("map.txt","w");
+	FILE *out = fopen("z_map.txt","w");
 
     for(unsigned int i = 0; i < grid.size(); ++i ) {
 		fprintf(out,"\n");
@@ -84,19 +99,25 @@ void State::printHistory() {
 				fprintf(out," ");
         }
     }
+    fflush(out);
     fclose(out);
 }
 
-void State::initHistory() {
-    for(unsigned int i = 0; i < grid.size(); ++i )
-        for(unsigned int j = 0; j < grid[i].size(); ++j )
-			grid[i][j].history=0;
 
-	FILE *out  = fopen("moves.txt","a");
-	fprintf(out,"\n TURN : %d\n", turn);
-	fclose(out);
 
+void State::setReachableTiles() {
+	for (unsigned int i = 0; i<grid.size(); i++)
+		for (unsigned int j = 0; j<grid[i].size(); j++)
+			if (grid[i][j].history%2 && grid[i][j].isVisible)
+					grid[i][j].history = 0;
 }
+
+
+
+/*******************************************************************************
+ ----------------------------- Our Code IS UP ----------------------------------
+ *******************************************************************************/
+
 
 //update lastVisit information for squares
 void State::updateLastVisit()
@@ -179,8 +200,6 @@ void State::updateVisionInformation()
             }
         }
     }
-
-    used.assign( myAnts.size(), 0 );    // init with 0 the used vector
 };
 
 /*

@@ -20,12 +20,11 @@ struct Bot
 
     void exploreMap();  //explore map with unused ants
 
-    void exploreMap2();  //explore map with unused ants
-
-    void exploreMap3();  //explore map with unused ants
-
     void endTurn();     //indicates to the engine that it has made its moves
 
+	void sendToBorder();
+
+	void BFS(vector<Location>, vector< pair<Location, int > > &);
 };
 
 #endif //BOT_H_

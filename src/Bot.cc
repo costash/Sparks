@@ -1,5 +1,6 @@
 #include "Bot.h"
 #include "BfsQueueElement.h"
+#include <time.h>
 
 using namespace std;
 
@@ -34,11 +35,12 @@ void Bot::makeMoves()
     state.bug << "turn " << state.turn << ":" << endl;
     state.bug << state << endl;
 
+	state.newTurn();
 	state.updateHistory();
 	state.setReachableTiles();
-    exploreFood();
-//  exploreMap();
-    exploreMap3();
+	exploreFood();
+	sendToBorder();
+	exploreMap();
 
 	if (state.turn == state.turns)
 		state.printHistory();
@@ -89,14 +91,7 @@ void Bot::exploreFood()
                     state.used[state.grid[newLoc.row][newLoc.col].indexAnt] == 0 )
                     //our ant is here and it's not used
                 {
-                    int antDir;
-                    switch(d)
-                    {
-                        case 0: antDir = 2; break;
-                        case 1: antDir = 3; break;
-                        case 2: antDir = 0; break;
-                        case 3: antDir = 1; break;
-                    }
+                    int antDir = (d + 2) % 4;	// direction to go
 
                     if( state.grid[currentLoc.row][currentLoc.col].ant == -1 )
                     {
@@ -111,15 +106,12 @@ void Bot::exploreFood()
             }
         }
     }
-};
+}
 
-
-
-
-void Bot::exploreMap3()
+void Bot::exploreMap()
 {
-	FILE *out  = fopen("moves.txt","a");
-	int MAX, SUM, depth, steps = 11, direction = -1, direction2 = 0;
+	FILE *out  = fopen("z_moves.txt","a");
+	int MAX, SUM, depth, steps = 11, direction = 0;
 	State::explore Element;
     queue< State::explore > Inspect;
     Location sLoc, cLoc, nLoc;
@@ -129,15 +121,19 @@ void Bot::exploreMap3()
     	if (state.used[i] == true)
 			continue;
 
+		state.used[i] = true;
+
 		MAX = 0;
         sLoc = state.myAnts[i];
 
-		fprintf(out,"Furnica %d - coord x=%d , y=%d \t", i, sLoc.row, sLoc.col);
+//		fprintf(out,"Furnica %d - coord x=%d , y=%d \t", i, sLoc.row, sLoc.col);
         Element.depth = 1;
 
         vector<vector<bool> > visited (state.rows, vector<bool>(state.cols, 0));
 		visited[sLoc.row][sLoc.col] = true;
 
+		/**	Add the main directions N, S, E, W for starting the BFS explore
+		 **/
         for (int d=0; d<4; d++)
         {
 			nLoc = state.getLocation(sLoc, d);
@@ -149,10 +145,9 @@ void Bot::exploreMap3()
 			}
         }
 
+
         while (!Inspect.empty())
         {
-
-//			fprintf(out,"intra in while\n");
 
 			Element = Inspect.front();
 			cLoc = Element.loc;
@@ -161,9 +156,14 @@ void Bot::exploreMap3()
 
 //			fprintf(out,"Element: ");
 //			fprintf(out,"\t Coord: x=%d \t y=%d\n", cLoc.row , cLoc.col);
-			fflush(out);
+//			fflush(out);
 
-			if ( depth == steps-1)
+			depth++;
+
+			/**	If maximum number of steps was reached we look for the last
+			 ** visited tile on the 11th step
+			 **/
+			if ( depth == steps)
 			{
 				SUM = 0;
 				for( int d = 0; d <4; d++ )
@@ -173,6 +173,7 @@ void Bot::exploreMap3()
 						visited[nLoc.row][nLoc.col] == false)
 					{
 						SUM += state.grid[nLoc.row][nLoc.col].history;
+						state.grid[nLoc.row][nLoc.col].history = 0;
 					}
 				}
 
@@ -182,119 +183,156 @@ void Bot::exploreMap3()
 					direction = Element.direction;
 					MAX = SUM;
 				}
-				direction2 = Element.direction;
-
-				continue;
 			}
 
-			depth++;
-
-            for( int d=0; d < TDIRECTIONS; ++d )
-            {
-                nLoc = state.getLocation( cLoc, d );
-//				fprintf(out,"Coordonate: x=%d \t y=%d \t", nLoc.row, nLoc.col);
-//				fprintf(out,"------ vizitat: %d ",(int)visited[nLoc.row][nLoc.col]);
-
-				if (state.grid[nLoc.row][nLoc.col].isWater == false &&
-					visited[nLoc.row][nLoc.col] == false)
+			else {
+				for( int d=0; d < 4; ++d )
 				{
-					visited[nLoc.row][nLoc.col] = true ;
-					Element.loc = nLoc;
-					Element.depth = depth;
-					Inspect.push(Element);
-					state.grid[cLoc.row][cLoc.col].history = 0;
-//					fprintf(out," ----- history: %d ", state.grid[cLoc.row][cLoc.col].history);
-//					fprintf(out," ----- added -> step %d",depth);
-//					fflush(out);
+					nLoc = state.getLocation( cLoc, d );
+	//				fprintf(out,"Coordonate: x=%d \t y=%d \t", nLoc.row, nLoc.col);
+	//				fprintf(out,"------ vizitat: %d ",(int)visited[nLoc.row][nLoc.col]);
+
+					if (state.grid[nLoc.row][nLoc.col].isWater == false &&
+						visited[nLoc.row][nLoc.col] == false)
+					{
+						visited[nLoc.row][nLoc.col] = true ;
+						Element.loc = nLoc;
+						Element.depth = depth;
+						Inspect.push(Element);
+	//					state.grid[cLoc.row][cLoc.col].history = 0;
+	//					fprintf(out," ----- history: %d ", state.grid[cLoc.row][cLoc.col].history);
+	//					fprintf(out," ----- added -> step %d",depth);
+	//					fflush(out);
+					}
+	//				fprintf(out,"\n");
 				}
-//				fprintf(out,"\n");
-            }
+			}
         }
 
-		fprintf(out,"Furnica muta : %d \n", direction);
+		fprintf(out,"Furnica %d muta : %d \n", i, direction);
 		fflush(out);
 
-		if (direction == -1)
-			direction = direction2;
-		if (state.grid[sLoc.row][sLoc.col].ant == 0)
+		nLoc = state.getLocation(sLoc, direction);
+		if (state.grid[nLoc.row][nLoc.col].ant != 0) {
 			state.makeMove( sLoc, direction);
-
+		}
+/*		else {
+			int start = 0;
+			for (int k = start; k < start+4; k++) {
+				int d = k % 4;
+				if (d == direction ) continue;
+					nLoc = state.getLocation(sLoc, d);
+					if (state.grid[nLoc.row][nLoc.col].ant != 0 &&
+						state.grid[nLoc.row][nLoc.col].isWater == false &&
+						state.grid[nLoc.row][nLoc.col].isHill == false) {
+						state.makeMove( sLoc, d);
+						break;
+					}
+			}
+		}
+*/
     }
     fclose(out);
 }
 
-//explore map with unused ants
-void Bot::exploreMap()
+
+void Bot::sendToBorder()
 {
-    std::queue<Location> antQueue;
+	int i, j;
+	int steps = 11;
     Location sLoc, cLoc, nLoc;
-    for( unsigned int i = 0; i < state.used.size(); ++i )
-    {
-        sLoc = state.myAnts[i];
-        antQueue.push( sLoc );
-        int sDir, oldestVisit = 0;
+    queue < State::expBorder > findBorder;
+	State::expBorder Element;
+	FILE *out  = fopen("z_border.txt", "a");
 
-        std::vector<std::vector<bool> > visited(state.rows, std::vector<bool>(state.cols, 0));
-        visited[sLoc.row][sLoc.col] = 1;
-        bool exitBfs = false;
+	/**	Set the visited matrix to 0
+	 **/
+	int visited[state.rows][state.cols];
 
-        //find directions for each ant
-        while( !antQueue.empty() && !exitBfs )
-        {
-            cLoc = antQueue.front();
-            antQueue.pop();
+	for (i=0; i<state.rows; i++)
+		memset(visited[i], 0, state.cols * sizeof(int));
 
-            for( int d = 0; d < TDIRECTIONS; ++d )
-            {
-                nLoc = state.getLocation( cLoc, d );
+	Element.depth = 0;
+	Element.direction = -1;
 
-                if( !visited[nLoc.row][nLoc.col] &&
-                    state.grid[nLoc.row][nLoc.col].isVisible )
-                {
-                    antQueue.push( nLoc );
-                }
+	/**	Add all Enemy Ants in the queue
+	 **/
+	if (state.enemyAnts.size() == 0)
+		return;
 
-                visited[nLoc.row][nLoc.col] = 1;
+	for (unsigned i=0; i<state.enemyAnts.size(); i++)
+	{
+		Element.loc = state.enemyAnts[i];
+		Element.antType = 2;
+		visited[Element.loc.row][Element.loc.col] = 2;
+		findBorder.push(Element);
+	}
+
+	/**	Add all my Ants in the queue
+	 **/
+	for (unsigned i=0; i<state.myAnts.size(); i++)
+	{
+		Element.loc = state.myAnts[i];
+		Element.antType = 1;
+		Element.antIndex = i;
+		visited[Element.loc.row][Element.loc.col] = 1;
+		findBorder.push(Element);
+	}
+
+	fprintf(out,"Enemy ants: %d\n", state.enemyAnts.size());
+	fprintf(out,"My ants: %d\n", state.myAnts.size());
+	fprintf(out,"Queue size: %d\n", findBorder.size());
+	fflush(out);
+
+	while (!findBorder.empty()) {
+		Element = findBorder.front();
+		findBorder.pop();
+
+		if (Element.depth == steps)
+			continue;
+
+		Element.depth++;
+		for( int d=0; d < 4; d++ )
+		{
+			nLoc = state.getLocation( Element.loc, d );
+
+			if (Element.depth == 1)
+				Element.direction = d;
 
 
-                if( cLoc.row == sLoc.row && cLoc.col == sLoc.col &&
-                    state.grid[nLoc.row][nLoc.col].isWater == 0 &&
-                    state.grid[nLoc.row][nLoc.col].ant != 0 )
-                {
-                    //found a not visited place right from the start
-                    if( state.grid[nLoc.row][nLoc.col].lastVisit == -1 )
-                    {
-                        sDir = d;
-                        exitBfs = true;
-                        state.grid[nLoc.row][nLoc.col].lastVisit = 0;
-                        state.makeMove( sLoc, sDir );
-                        break;
-                    }
+			if (state.grid[nLoc.row][nLoc.col].isWater == false &&
+				visited[nLoc.row][nLoc.col] != Element.antType &&
+				visited[nLoc.row][nLoc.col] != 3)
+			{
+				visited[nLoc.row][nLoc.col] += Element.antType;
+				if (visited[nLoc.row][nLoc.col] != 3)
+				{
+					Element.loc = nLoc;
+					findBorder.push(Element);
+				}
+			}
 
-                    //try to find the oldest not visited place near start
-                    if( state.grid[nLoc.row][nLoc.col].lastVisit > oldestVisit )
-                    {
-                        oldestVisit = state.grid[nLoc.row][nLoc.col].lastVisit;
-                        sDir = d;
-                    }
-                }
-            }
-        }
+			if (visited[nLoc.row][nLoc.col] == 3 &&  Element.antType == 1 &&
+				state.used[Element.antIndex] == false)
+			{
+				state.used[Element.antIndex] = true;
+				fprintf(out," Trying to move ant %d in direction %d\n", Element.antIndex, Element.direction);
+				fflush(out);
+				state.makeMove( state.myAnts[Element.antIndex], Element.direction);
+			}
+		}
+	}
 
-        //this is just a temporary solution for exiting the loop and move
-        if( !exitBfs )
-        {
-            nLoc = state.getLocation( sLoc, sDir );
+	fprintf(out, "Turn %d \n\n\n", state.turn);
+	for (i=0; i<state.rows; i++) {
+		for (j=0; j<state.cols; j++)
+			if (state.grid[i][j].ant == 0)
+			fprintf(out, "%d ", visited[i][j]);
+		fprintf(out, "\n");
+	}
+	fflush(out);
+}
 
-            if( state.grid[nLoc.row][nLoc.col].isWater == 0 &&
-                    state.grid[nLoc.row][nLoc.col].ant != 0 )
-            {
-                state.grid[nLoc.row][nLoc.col].lastVisit = 0;
-                state.makeMove( sLoc, sDir );
-            }
-        }
-    }
-};
 
 //finishes the turn
 void Bot::endTurn()

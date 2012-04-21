@@ -18,6 +18,8 @@
 #include "Square.h"
 #include "Location.h"
 
+using namespace std;
+
 /*
     constants
 */
@@ -45,6 +47,7 @@ struct State
     std::vector<std::vector<Square> > grid;
     std::vector<Location> myAnts, enemyAnts, myHills, enemyHills, food;
     std::vector<bool> used;     //wether an ant has a target or not
+    std::vector <int> mission;
 
     Timer timer;
     Bug bug;
@@ -56,6 +59,14 @@ struct State
 		int direction;
 	};
 
+	struct expBorder {
+		int antIndex;
+		Location loc;
+		int depth;
+		int antType;
+		int direction ;
+	};
+
     /*
         Functions
     */
@@ -65,18 +76,20 @@ struct State
     void setup();
     void reset();
 
+	void newTurn();
 	void initHistory();
 	void updateHistory();
 	void setReachableTiles();
     void printHistory();
 
+
+
+
+
     void updateLastVisit();
-
     void makeMove(const Location &loc, int direction);
-
     double distance(const Location &loc1, const Location &loc2);
     Location getLocation(const Location &startLoc, int direction);
-
     void updateVisionInformation();
 };
 
