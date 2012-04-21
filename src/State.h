@@ -67,6 +67,12 @@ struct State
 		int direction ;
 	};
 
+	struct mission {
+		int index;
+		int type;
+		int nextMove;
+	}
+
     /*
         Functions
     */

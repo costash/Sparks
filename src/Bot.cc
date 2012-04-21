@@ -38,9 +38,9 @@ void Bot::makeMoves()
 	state.newTurn();
 	state.updateHistory();
 	state.setReachableTiles();
-	exploreFood();
-	sendToBorder();
 	exploreMap();
+	sendToBorder();
+	exploreFood();
 
 	if (state.turn == state.turns)
 		state.printHistory();
