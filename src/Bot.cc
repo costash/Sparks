@@ -39,8 +39,8 @@ void Bot::makeMoves()
 	state.updateHistory();
 	state.setReachableTiles();
 	exploreFood();
-	sendToBorder();
 	exploreMap();
+	sendToBorder();
 
 	if (state.turn == state.turns)
 		state.printHistory();
@@ -216,7 +216,7 @@ void Bot::exploreMap()
 		if (state.grid[nLoc.row][nLoc.col].ant != 0) {
 			state.makeMove( sLoc, direction);
 		}
-/*		else {
+		else {
 			int start = 0;
 			for (int k = start; k < start+4; k++) {
 				int d = k % 4;
@@ -230,7 +230,7 @@ void Bot::exploreMap()
 					}
 			}
 		}
-*/
+
     }
     fclose(out);
 }
