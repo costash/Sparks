@@ -54,27 +54,30 @@ struct State
     Bug bug;
 
 
-	struct explore {
-		Location loc;
-		int depth;
-		int direction;
-	};
+    struct explore
+    {
+        Location loc;
+        int depth;
+        int direction;
+    };
 
-	struct expBorder {
-		int antIndex;
-		Location loc;
-		int depth;
-		int antType;
-		int direction ;
-	};
+    struct expBorder
+    {
+        int antIndex;
+        Location loc;
+        int depth;
+        int antType;
+        int direction ;
+    };
 
-	struct mission {
-		int index;
-		int type;
-		int nextMove;
-	};
+    struct mission
+    {
+        int index;
+        int type;
+        int nextMove;
+    };
 
-	vector<int> Border;
+    vector<int> Border;
 
     /*
         Functions
@@ -85,10 +88,10 @@ struct State
     void setup();
     void reset();
 
-	void newTurn();
-	void initHistory();
-	void updateHistory();
-	void setReachableTiles();
+    void newTurn();
+    void initHistory();
+    void updateHistory();
+    void setReachableTiles();
     void printHistory();
     void printBorders();
 

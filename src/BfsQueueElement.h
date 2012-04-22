@@ -10,13 +10,13 @@ struct BfsQueueElement
 {
     Location loc;
     int root;   //root index, starting point
-    
+
     BfsQueueElement( Location l, int r)
     {
         loc = l;
         root = r;
     }
-    
+
     BfsQueueElement()
     {
         loc = Location();
