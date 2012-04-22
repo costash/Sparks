@@ -5,6 +5,9 @@
 
 using namespace std;
 
+
+
+
 //constructor
 Bot::Bot()
 {
@@ -40,8 +43,9 @@ void Bot::makeMoves()
 	state.updateHistory();
 	state.setReachableTiles();
 	exploreFood();
-	sendToBorder();
+	getToBorder();
 	exploreMap();
+//	sendToBorder();
 
 	if (state.turn == state.turns)
 		state.printHistory();
@@ -112,7 +116,7 @@ void Bot::exploreFood()
 void Bot::exploreMap()
 {
 	FILE *out  = fopen("z_moves.txt","a");
-	int MAX, SUM, depth, steps = 11, direction = 0;
+	int MAX, SUM, depth, steps = 12, direction = 0;
 	State::explore Element;
     queue< State::explore > Inspect;
     Location sLoc, cLoc, nLoc;
@@ -121,8 +125,6 @@ void Bot::exploreMap()
     {
     	if (state.used[i] == true)
 			continue;
-
-		state.used[i] = true;
 
 		MAX = 0;
         sLoc = state.myAnts[i];
@@ -210,13 +212,14 @@ void Bot::exploreMap()
 			}
         }
 
-		fprintf(out,"Furnica %d muta : %d \n", i, direction);
-		fflush(out);
+
 
 		nLoc = state.getLocation(sLoc, direction);
 		if (state.grid[nLoc.row][nLoc.col].ant != 0) {
+			state.used[i] = true;
 			state.makeMove( sLoc, direction);
 		}
+
 		else {
 			int start = 0;
 			for (int k = start; k < start+4; k++) {
@@ -237,25 +240,25 @@ void Bot::exploreMap()
 }
 
 
-void Bot::sendToBorder()
+void Bot::getToBorder()
 {
-	int i, j;
-	int steps = 11;
-    Location sLoc, cLoc, nLoc;
+	FILE *outB  = fopen("z_border.txt", "a");
+	int steps = 12;
+    Location nLoc;
     queue < State::expBorder > findBorder;
 	State::expBorder Element;
-	FILE *out  = fopen("z_border.txt", "a");
-
-	/**	Set the visited matrix to 0
-	 **/
-	int visited[state.rows][state.cols];
-
-	for (i=0; i<state.rows; i++)
-		memset(visited[i], 0, state.cols * sizeof(int));
-
 	Element.depth = 0;
-	Element.direction = -1;
 
+	/**	Add all Enemy Ants in the queue
+	 **/
+
+	for (unsigned int i=0; i<state.enemyAnts.size(); i++)
+	{
+		Element.loc = state.enemyAnts[i];
+		Element.antType = 2;
+		state.grid[Element.loc.row][Element.loc.col].border = 2;
+		findBorder.push(Element);
+	}
 
 	/**	Add all my Ants in the queue
 	 **/
@@ -264,29 +267,17 @@ void Bot::sendToBorder()
 		Element.loc = state.myAnts[i];
 		Element.antType = 1;
 		Element.antIndex = i;
-		visited[Element.loc.row][Element.loc.col] = 1;
+		state.grid[Element.loc.row][Element.loc.col].border = 1;
 		findBorder.push(Element);
 	}
 
-	/**	Add all Enemy Ants in the queue
-	 **/
-	if (state.enemyAnts.size() == 0)
-		return;
+	fprintf(outB,"Enemy ants: %d\n", state.enemyAnts.size());
+	fprintf(outB,"My ants: %d\n", state.myAnts.size());
+	fprintf(outB,"Queue size: %d\n", findBorder.size());
+	fflush(outB);
 
-	for (unsigned int i=0; i<state.enemyAnts.size(); i++)
+	while (!findBorder.empty())
 	{
-		Element.loc = state.enemyAnts[i];
-		Element.antType = 2;
-		visited[Element.loc.row][Element.loc.col] = 2;
-		findBorder.push(Element);
-	}
-
-	fprintf(out,"Enemy ants: %d\n", state.enemyAnts.size());
-	fprintf(out,"My ants: %d\n", state.myAnts.size());
-	fprintf(out,"Queue size: %d\n", findBorder.size());
-	fflush(out);
-
-	while (!findBorder.empty()) {
 		Element = findBorder.front();
 		findBorder.pop();
 
@@ -294,7 +285,7 @@ void Bot::sendToBorder()
 			continue;
 
 		Element.depth++;
-		for( int d=0; d < 4; d++ )
+		for( int d=0; d<4; d++ )
 		{
 			nLoc = state.getLocation( Element.loc, d );
 
@@ -303,30 +294,52 @@ void Bot::sendToBorder()
 
 
 			if (state.grid[nLoc.row][nLoc.col].isWater == false &&
-				visited[nLoc.row][nLoc.col] != Element.antType &&
-				visited[nLoc.row][nLoc.col] != 3)
+				state.grid[nLoc.row][nLoc.col].border != Element.antType &&
+				state.grid[nLoc.row][nLoc.col].border != 3)
 			{
-				if (Element.antType == 1)
-					visited[nLoc.row][nLoc.col] += Element.antType;
+				if (Element.antType == 1) {
+					switch (state.grid[nLoc.row][nLoc.col].border)
+					{
+						case 0:
+						{
+							if (Element.depth == steps)
+								state.grid[nLoc.row][nLoc.col].border = 4;
+							else
+								state.grid[nLoc.row][nLoc.col].border = 1;
+							break;
+						}
+						case 1:
+							break;
+						case 2:
+							state.grid[nLoc.row][nLoc.col].border = 3;
+							break;
+						case 4:
+							state.grid[nLoc.row][nLoc.col].border = 1;
+							break;
+						default:
+							break;
+					}
+				}
 				else {
-					if (visited[nLoc.row][nLoc.col] == 1)
+					if (state.grid[nLoc.row][nLoc.col].border == 1)
 						continue;
-					visited[nLoc.row][nLoc.col] = 2;
+					state.grid[nLoc.row][nLoc.col].border = 2;
 				}
 
-				if (visited[nLoc.row][nLoc.col] != 3)
+				if (state.grid[nLoc.row][nLoc.col].border != 3)
 				{
 					Element.loc = nLoc;
 					findBorder.push(Element);
 				}
 			}
 
-			if (visited[nLoc.row][nLoc.col] == 3 &&  Element.antType == 1 &&
-				state.used[Element.antIndex] == false)
+			if (Element.antType == 1 &&
+				state.grid[nLoc.row][nLoc.col].border == 3 &&
+				state.used[Element.antIndex] == false )
 			{
 				state.used[Element.antIndex] = true;
-				fprintf(out," Trying to move ant %d in direction %d\n", Element.antIndex, Element.direction);
-				fflush(out);
+				fprintf(outB," Trying to move ant %d in direction %d\n", Element.antIndex, Element.direction);
+				fflush(outB);
 				nLoc = state.getLocation( state.myAnts[Element.antIndex], Element.direction );
 				Square tile = state.grid[nLoc.row][nLoc.col];
 				if (tile.isWater == false)
@@ -334,20 +347,93 @@ void Bot::sendToBorder()
 			}
 		}
 	}
-
-	fprintf(out, "Turn %d \n\n\n", state.turn);
-	for (i=0; i<state.rows; i++) {
-		for (j=0; j<state.cols; j++) {
-			if (state.grid[i][j].ant == 0)
-				fprintf(out, " # %d ", state.grid[i][j].indexAnt);
-			else
-				fprintf(out, "%d ", visited[i][j]);
-		}
-		fprintf(out, "\n");
-	}
-	fflush(out);
+	state.printBorders();
 }
 
+
+
+void Bot::sendToBorder()
+{
+	FILE *out = fopen("z_border.txt","a");
+    Location nLoc;
+    queue < State::explore > findBorder;
+	State::explore Element;
+
+	int visited[state.rows][state.cols];
+
+	/**	Add all my Ants in the queue
+	 **/
+	for (unsigned int i=0; i<state.myAnts.size(); i++)
+	{
+		if (state.used[i] == true )
+			continue;
+
+		nLoc = state.myAnts[i];
+		fprintf(out," Furnica %d - pozitie %d - %d este: %d\n", i, nLoc.row, nLoc.col, (int)state.used[i]);
+		fflush(out);
+
+		for (int k=0; k<state.rows; k++)
+			memset(visited[k], 0, state.cols * sizeof(int));
+
+		int ok = 1;
+		Element.depth = 0;
+		Element.loc = state.myAnts[i];
+		visited[Element.loc.row][Element.loc.col] = 1;
+		findBorder.push(Element);
+
+		while (!findBorder.empty() && ok)
+		{
+			Element = findBorder.front();
+			findBorder.pop();
+			Element.depth++;
+
+			for(int d=0; d < 4 && ok; d++ )
+			{
+				nLoc = state.getLocation( Element.loc, d );
+
+				if (Element.depth == 1)
+					Element.direction = d;
+
+				if (state.grid[nLoc.row][nLoc.col].isWater == false &&
+					visited[nLoc.row][nLoc.col] == 0)
+				{
+					visited[nLoc.row][nLoc.col] = 1;
+					if (state.grid[nLoc.row][nLoc.col].border < 3)
+					{
+						Element.loc = nLoc;
+						findBorder.push(Element);
+					}
+
+					if (state.grid[nLoc.row][nLoc.col].border >= 3)
+					{
+						visited[nLoc.row][nLoc.col] = 3;
+						state.used[i] = true;
+						nLoc = state.getLocation( state.myAnts[i], Element.direction );
+						Square tile = state.grid[nLoc.row][nLoc.col];
+						if (tile.isWater == false)
+							state.makeMove( state.myAnts[i], Element.direction);
+						fprintf(out," Mutata spre %d\n", Element.direction);
+						ok = 0;
+					}
+				}
+			}
+		}
+
+		int i, j;
+		fprintf(out, "Turn %d \n\n\n", state.turn);
+		for (i=0; i<state.rows; i++) {
+			for (j=0; j<state.cols; j++) {
+				if (state.grid[i][j].ant == 0)
+					fprintf(out, " A ");
+				else
+					fprintf(out, "%d ", visited[i][j]);
+			}
+			fprintf(out, "\n");
+		}
+		fflush(out);
+
+	}
+}
 
 //finishes the turn
 void Bot::endTurn()

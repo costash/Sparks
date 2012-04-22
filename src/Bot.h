@@ -22,6 +22,8 @@ struct Bot
 
     void endTurn();     //indicates to the engine that it has made its moves
 
+	void getToBorder();
+
 	void sendToBorder();
 
 	void BFS(vector<Location>, vector< pair<Location, int > > &);

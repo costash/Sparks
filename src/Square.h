@@ -15,6 +15,7 @@ struct Square
     std::vector<int> deadAnts;
 
 	int history;
+	int border;
 
     Square()
     {

@@ -25,7 +25,7 @@ void State::setup()
     initHistory();
 
     /** File Debugging clear **/
-	FILE *out  = fopen("z_moves.txt","w");
+	FILE *out  = fopen("z_info.txt","w");
 	fclose(out);
 };
 
@@ -51,8 +51,12 @@ void State::reset()
 
 void State::initHistory() {
     for(unsigned int i = 0; i < grid.size(); ++i )
+    {
         for(unsigned int j = 0; j < grid[i].size(); ++j )
+        {
 			grid[i][j].history=0;
+		}
+	}
 
 	FILE *out  = fopen("moves.txt","a");
 	fprintf(out,"\n TURN : %d\n", turn);
@@ -66,6 +70,7 @@ void State::updateHistory() {
         for(unsigned int j = 0; j < grid[i].size(); ++j ) {
 				if(grid[i][j].isWater == false)
 					grid[i][j].history++;
+				grid[i][j].border=0;
         }
 }
 
@@ -77,9 +82,9 @@ void State::newTurn() {
 void State::printHistory() {
 	FILE *out = fopen("z_map.txt","w");
 
-    for(unsigned int i = 0; i < grid.size(); ++i ) {
+    for( int i = 0; i < rows; ++i ) {
 		fprintf(out,"\n");
-        for(unsigned int j = 0; j < grid[i].size(); ++j ) {
+        for( int j = 0; j < cols; ++j ) {
         	if (grid[i][j].ant == 0)
 				fprintf(out,"A");
         	else
@@ -101,6 +106,25 @@ void State::printHistory() {
     }
     fflush(out);
     fclose(out);
+}
+
+void State::printBorders() {
+	FILE *outB  = fopen("z_border.txt", "a");
+
+	int i, j;
+	fprintf(outB, "Turn %d \n\n\n", turn);
+	for (i=0; i<rows; i++) {
+		for (j=0; j<cols; j++) {
+			if (grid[i][j].ant == 0)
+				fprintf(outB, "A ");
+			else
+				fprintf(outB, "%d ", grid[i][j].border);
+		}
+		fprintf(outB, "\n");
+	}
+	fflush(outB);
+	fclose(outB);
+
 }
 
 
