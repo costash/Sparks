@@ -65,10 +65,23 @@ n este cel anterior.
 		- complexitate O(M *N^2) pentru M furnici
 
 
-
-
-
 	getToBorder();
+		- un bfs porniti din toate furnicile vizibile pe harta, toate furnicile mele
+		cat si cele inamice.
+		- furnica mea - are valoarea 1 si indicele de vizitat 1
+		- furncica inamica - valoarea 2 si indice de viziatat 2
+		- fac o intersectie de BFS-uri pentru a depista borders
+		- la intersectia de BFS un square (grid.square) devine 3 ce reprezinta BORDERWIDTHS
+		- la intalnirea unui border cea mai apropiata furnica se duce catre acesta
+		- astfel se incearca alungarea inamicului cat mai departe
+		- sideEffect : furnicile vor ataca 1 vs 1 si vor muri ambele
+		- sideEffect : furnicile inamice se vor retrage si voi avea posibilitatea de a
+			aduna mai multe resurse mai repede decat inamicul pentru al omora
+
+
+		complexitatea O ((m1+m2) * N ^2) unde m1+m2 = toate furnicile vizibile pe harta
+
+		Algoritm tip Kamikaze - castigator doar pe 2 harti din 4
 
 
 
@@ -148,8 +161,6 @@ urma, am renuntat la codul meu, deoarece nu genera suficiente furnici
 
         Ivanica Gabriel:
 
-- am organizat fisierele de pe github [sursa noastra de version control system]
+- implementat exploreMap() , getBorders(), si restul functiilor necesare
 - research algoritmi si idei de implementare
-- am scris functia getToBorder() si sendToBorder()
-- am updatat functia exploreMap()
 

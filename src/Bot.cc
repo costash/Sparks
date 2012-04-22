@@ -43,8 +43,6 @@ void Bot::makeMoves()
 	state.updateHistory();
 	state.setReachableTiles();
 	exploreFood();
-	findBorders();
-	state.printBorders();
 	getToBorder();
 	exploreMap();
 //	sendToBorder();
@@ -415,7 +413,6 @@ void Bot::sendToBorder()
 
 	}
 }
-
 
 void Bot::findBorders() {
 	int steps = 12;
