@@ -4,7 +4,7 @@
  *      Parcalabescu Maria
  *      Oncioiu Raluca
  *      Ivanica Gabriel
- * Etapa1: 04.03.2012
+ * Etapa3: 22.04.2012
  */
 
     **Abordare algoritmica
@@ -21,8 +21,22 @@ furnici.
 initial o functie care muta furnicile *neutilizate* in mod aleator, apoi insa
 am revenit asupra acesteia si am decis sa mutam furnicile spre zone marcate
 drept *necunoscute*, sau catre unele vizitate cel mai de de mult timp.
-        Momentan, se updateaza la fiecare runda informatia despre o celula, daca
-a fost vizitata, si daca da, de cat timp nu a mai fost o furnica acolo.
+
+        Pentru aparare, trimitem furnici catre zone numite Borders (spatii
+stramte), folosind tot un BFS
+
+
+    **Complexitate
+
+        Pentru BFS-ul catre mancare: O(n^2), unde n este distanta pana la cea
+mai apropiata furnica. Limita maxima pentru n este 11*2.
+        Deci complexitatea pentru cautarea mancarii este:
+            O(n^2 * m), unde n este cel de mai sus, iar m este numarul de bucati
+de mancare vizibile.
+
+        Celelalte functii folosesc tot BFS, pornind de la furnici, complexitatea
+lor fiind O(n^2 * m), unde m este numarul de furnici pentru care se face BFS, iar
+n este cel anterior.
 
 
     **Structura proiectului
@@ -32,8 +46,8 @@ Am pastrat comentariile in engleza.
         In plus, am adaugat BfsQueueElement.h pentru BFS-ul din exploreFood().
 
         Schimbarile fata de scheletul initial au fost facute in fisierul Bot.cc
-in care am adaugat functiile pentru explorare si colectare a mancarii. Alte schimbari
-majore nu s-au produs.
+in care am adaugat functiile pentru explorare si colectare a mancarii. Au fost
+adaugate ulterior si functii pentru trimitere a furnicilor catre borders.
 
 
     **Limbajul de programare folosit
@@ -46,14 +60,15 @@ relativ repede acest limbaj de programare.
 
     **Mediul de dezvoltare folosit
 
-        Fiecare membru a lucrat in gedit si/sau vim.
+        Fiecare membru a lucrat in gedit si/sau vim sau un IDE precum Visual Studio
+      sau Eclipse
 
 
     **Mod de compilare
 
         S-a folosit makefile-ul implicit, deoarece nu am adaugat alte surse.
 
-    Comanda este:
+      Comanda este:
             make
 
 
@@ -62,7 +77,7 @@ relativ repede acest limbaj de programare.
         S-a folosit comanda implicita pentru fiecare harta:
 
         ./playgame.py --log_dir game_logs -So --verbose --engine_seed 42
---player_seed 0 --turns 100 --map_file CALE_CATRE_HARTA "./bot32" "./MyBot"
+--player_seed 0 --turns 1000 --map_file CALE_CATRE_HARTA "./bot32" "./MyBot"
 | java -jar visualizer.jar
 
 
@@ -71,9 +86,9 @@ relativ repede acest limbaj de programare.
         Am luat idei din codul lui xathis[1], pentru a avea o idee de ansamblu
 asupra strategiei de joc. In cele din urma, ne-am folosit de BFS-ul din functia
 updateVisionInformation() din State.cc, pe care l-am imbunatatit pentru nevoile
-botului nostru.
+botului nostru. Ne-am folosit si de ideea de a trimite furnicile catre borders.
 
-[1] http://xathis.com/posts/ai-challenge-2011-ants.html
+      [1] http://xathis.com/posts/ai-challenge-2011-ants.html
 
 
     **Contributiile fiecarui membru al echipei
@@ -101,4 +116,6 @@ urma, am renuntat la codul meu, deoarece nu genera suficiente furnici
 
 - am organizat fisierele de pe github [sursa noastra de version control system]
 - research algoritmi si idei de implementare
+- am scris functia getToBorder() si sendToBorder()
+- am updatat functia exploreMap()
 
