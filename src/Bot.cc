@@ -249,17 +249,6 @@ void Bot::getToBorder()
 	State::expBorder Element;
 	Element.depth = 0;
 
-	/**	Add all Enemy Ants in the queue
-	 **/
-
-	for (unsigned int i=0; i<state.enemyAnts.size(); i++)
-	{
-		Element.loc = state.enemyAnts[i];
-		Element.antType = 2;
-		state.grid[Element.loc.row][Element.loc.col].border = 2;
-		findBorder.push(Element);
-	}
-
 	/**	Add all my Ants in the queue
 	 **/
 	for (unsigned int i=0; i<state.myAnts.size(); i++)
@@ -268,6 +257,17 @@ void Bot::getToBorder()
 		Element.antType = 1;
 		Element.antIndex = i;
 		state.grid[Element.loc.row][Element.loc.col].border = 1;
+		findBorder.push(Element);
+	}
+
+	/**	Add all Enemy Ants in the queue
+	 **/
+
+	for (unsigned int i=0; i<state.enemyAnts.size(); i++)
+	{
+		Element.loc = state.enemyAnts[i];
+		Element.antType = 2;
+		state.grid[Element.loc.row][Element.loc.col].border = 2;
 		findBorder.push(Element);
 	}
 
@@ -285,7 +285,7 @@ void Bot::getToBorder()
 			continue;
 
 		Element.depth++;
-		for( int d=0; d<4; d++ )
+		for( int d=0; d < 4; d++ )
 		{
 			nLoc = state.getLocation( Element.loc, d );
 
@@ -301,13 +301,11 @@ void Bot::getToBorder()
 					switch (state.grid[nLoc.row][nLoc.col].border)
 					{
 						case 0:
-						{
 							if (Element.depth == steps)
 								state.grid[nLoc.row][nLoc.col].border = 4;
 							else
 								state.grid[nLoc.row][nLoc.col].border = 1;
 							break;
-						}
 						case 1:
 							break;
 						case 2:
