@@ -290,7 +290,7 @@ void Bot::sendToBorder()
 		Element = findBorder.front();
 		findBorder.pop();
 
-		if (Element.depth == steps && Element.antType == 2)
+		if (Element.depth == steps)
 			continue;
 
 		Element.depth++;
