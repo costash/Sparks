@@ -1,6 +1,7 @@
 #include "Bot.h"
 #include "BfsQueueElement.h"
 #include <time.h>
+#include <string.h>
 
 using namespace std;
 
@@ -243,8 +244,7 @@ void Bot::sendToBorder()
     Location sLoc, cLoc, nLoc;
     queue < State::expBorder > findBorder;
 	State::expBorder Element;
-	FILE *out  = fopen("z_border.txt", "w");
-	out  = fopen("z_border.txt", "a");
+	FILE *out  = fopen("z_border.txt", "a");
 
 	/**	Set the visited matrix to 0
 	 **/
@@ -256,27 +256,28 @@ void Bot::sendToBorder()
 	Element.depth = 0;
 	Element.direction = -1;
 
-	/**	Add all Enemy Ants in the queue
-	 **/
-	if (state.enemyAnts.size() == 0)
-		return;
-
-	for (unsigned i=0; i<state.enemyAnts.size(); i++)
-	{
-		Element.loc = state.enemyAnts[i];
-		Element.antType = 2;
-		visited[Element.loc.row][Element.loc.col] = 2;
-		findBorder.push(Element);
-	}
 
 	/**	Add all my Ants in the queue
 	 **/
-	for (unsigned i=0; i<state.myAnts.size(); i++)
+	for (unsigned int i=0; i<state.myAnts.size(); i++)
 	{
 		Element.loc = state.myAnts[i];
 		Element.antType = 1;
 		Element.antIndex = i;
 		visited[Element.loc.row][Element.loc.col] = 1;
+		findBorder.push(Element);
+	}
+
+	/**	Add all Enemy Ants in the queue
+	 **/
+	if (state.enemyAnts.size() == 0)
+		return;
+
+	for (unsigned int i=0; i<state.enemyAnts.size(); i++)
+	{
+		Element.loc = state.enemyAnts[i];
+		Element.antType = 2;
+		visited[Element.loc.row][Element.loc.col] = 2;
 		findBorder.push(Element);
 	}
 
@@ -289,7 +290,7 @@ void Bot::sendToBorder()
 		Element = findBorder.front();
 		findBorder.pop();
 
-		if (Element.depth == steps)
+		if (Element.depth == steps && Element.antType == 2)
 			continue;
 
 		Element.depth++;
@@ -305,7 +306,14 @@ void Bot::sendToBorder()
 				visited[nLoc.row][nLoc.col] != Element.antType &&
 				visited[nLoc.row][nLoc.col] != 3)
 			{
-				visited[nLoc.row][nLoc.col] += Element.antType;
+				if (Element.antType == 1)
+					visited[nLoc.row][nLoc.col] += Element.antType;
+				else {
+					if (visited[nLoc.row][nLoc.col] == 1)
+						continue;
+					visited[nLoc.row][nLoc.col] = 2;
+				}
+
 				if (visited[nLoc.row][nLoc.col] != 3)
 				{
 					Element.loc = nLoc;
@@ -331,7 +339,7 @@ void Bot::sendToBorder()
 	for (i=0; i<state.rows; i++) {
 		for (j=0; j<state.cols; j++) {
 			if (state.grid[i][j].ant == 0)
-				fprintf(out, "# ");
+				fprintf(out, " # %d ", state.grid[i][j].indexAnt);
 			else
 				fprintf(out, "%d ", visited[i][j]);
 		}

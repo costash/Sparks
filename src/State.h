@@ -73,6 +73,8 @@ struct State
 		int nextMove;
 	};
 
+	vector<int> Border;
+
     /*
         Functions
     */
