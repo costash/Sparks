@@ -25,8 +25,6 @@ struct Bot
 	void getToBorder();
 
 	void sendToBorder();
-
-	void BFS(vector<Location>, vector< pair<Location, int > > &);
 };
 
 #endif //BOT_H_

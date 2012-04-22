@@ -128,8 +128,6 @@ void Bot::exploreMap()
 
 		MAX = 0;
         sLoc = state.myAnts[i];
-
-//		fprintf(out,"Furnica %d - coord x=%d , y=%d \t", i, sLoc.row, sLoc.col);
         Element.depth = 1;
 
         vector<vector<bool> > visited (state.rows, vector<bool>(state.cols, 0));
@@ -148,7 +146,6 @@ void Bot::exploreMap()
 			}
         }
 
-
         while (!Inspect.empty())
         {
 
@@ -156,10 +153,6 @@ void Bot::exploreMap()
 			cLoc = Element.loc;
 			depth = Element.depth;
 			Inspect.pop();
-
-//			fprintf(out,"Element: ");
-//			fprintf(out,"\t Coord: x=%d \t y=%d\n", cLoc.row , cLoc.col);
-//			fflush(out);
 
 			depth++;
 
@@ -180,7 +173,6 @@ void Bot::exploreMap()
 					}
 				}
 
-//				fprintf(out,"Suma : %d \t Coordonate: x=%d \t y=%d \n",SUM, cLoc.row, cLoc.col);
 				if (SUM >= MAX)
 				{
 					direction = Element.direction;
@@ -192,9 +184,6 @@ void Bot::exploreMap()
 				for( int d=0; d < 4; ++d )
 				{
 					nLoc = state.getLocation( cLoc, d );
-	//				fprintf(out,"Coordonate: x=%d \t y=%d \t", nLoc.row, nLoc.col);
-	//				fprintf(out,"------ vizitat: %d ",(int)visited[nLoc.row][nLoc.col]);
-
 					if (state.grid[nLoc.row][nLoc.col].isWater == false &&
 						visited[nLoc.row][nLoc.col] == false)
 					{
@@ -202,17 +191,10 @@ void Bot::exploreMap()
 						Element.loc = nLoc;
 						Element.depth = depth;
 						Inspect.push(Element);
-	//					state.grid[cLoc.row][cLoc.col].history = 0;
-	//					fprintf(out," ----- history: %d ", state.grid[cLoc.row][cLoc.col].history);
-	//					fprintf(out," ----- added -> step %d",depth);
-	//					fflush(out);
 					}
-	//				fprintf(out,"\n");
 				}
 			}
         }
-
-
 
 		nLoc = state.getLocation(sLoc, direction);
 		if (state.grid[nLoc.row][nLoc.col].ant != 0) {
@@ -318,7 +300,8 @@ void Bot::getToBorder()
 							break;
 					}
 				}
-				else {
+				else
+				{
 					if (state.grid[nLoc.row][nLoc.col].border == 1)
 						continue;
 					state.grid[nLoc.row][nLoc.col].border = 2;
@@ -347,8 +330,6 @@ void Bot::getToBorder()
 	}
 	state.printBorders();
 }
-
-
 
 void Bot::sendToBorder()
 {

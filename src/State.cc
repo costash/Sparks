@@ -65,6 +65,14 @@ void State::initHistory() {
 }
 
 
+void State::setReachableTiles() {
+	for (unsigned int i = 0; i<grid.size(); i++)
+		for (unsigned int j = 0; j<grid[i].size(); j++)
+			if (grid[i][j].isVisible)
+					grid[i][j].history = 0;
+}
+
+
 void State::updateHistory() {
     for(unsigned int i = 0; i < grid.size(); ++i )
         for(unsigned int j = 0; j < grid[i].size(); ++j ) {
@@ -126,16 +134,6 @@ void State::printBorders() {
 	fclose(outB);
 
 }
-
-
-
-void State::setReachableTiles() {
-	for (unsigned int i = 0; i<grid.size(); i++)
-		for (unsigned int j = 0; j<grid[i].size(); j++)
-			if (grid[i][j].history%2 && grid[i][j].isVisible)
-					grid[i][j].history = 0;
-}
-
 
 
 /*******************************************************************************

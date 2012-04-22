@@ -1,5 +1,5 @@
 /**Echipa: Sparks
- * Membri: 
+ * Membri:
  *      Serban-Radoi Constantin (capitan)
  *      Parcalabescu Maria
  *      Oncioiu Raluca
@@ -39,9 +39,31 @@ lor fiind O(n^2 * m), unde m este numarul de furnici pentru care se face BFS, ia
 n este cel anterior.
 
 
+	state.newTurn();
+		- 	Initializeaza vectorul de assign task pentru fiecare furnica cu 0
+
+	state.updateHistory();
+		-	Incrementeaza cu 1 valoarea fiecarui square de pe harta atat timp cat
+			nu a mai fost vizitat
+
+	state.setReachableTiles();
+		-	seteaza fiecare squere din aria vizuala a unei furnici cu 0
+		-	utilizat pentru functia de exploreMap
+
+
+	exploreMap();
+		-
+
+
+
+	getToBorder();
+
+
+
+
     **Structura proiectului
 
-        Am lucrat pe scheletul de cod de pe aichallenge si cu /tools de la echipa de PA. 
+        Am lucrat pe scheletul de cod de pe aichallenge si cu /tools de la echipa de PA.
 Am pastrat comentariile in engleza.
         In plus, am adaugat BfsQueueElement.h pentru BFS-ul din exploreFood().
 
