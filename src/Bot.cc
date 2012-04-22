@@ -43,6 +43,8 @@ void Bot::makeMoves()
 	state.updateHistory();
 	state.setReachableTiles();
 	exploreFood();
+	findBorders();
+	state.printBorders();
 	getToBorder();
 	exploreMap();
 //	sendToBorder();
@@ -411,6 +413,47 @@ void Bot::sendToBorder()
 		}
 		fflush(out);
 
+	}
+}
+
+
+void Bot::findBorders() {
+	int steps = 12;
+    Location nLoc;
+    queue < State::explore > findBorder;
+	State::explore Element;
+	Element.depth = 0;
+
+	/**	Add all my Ants in the queue
+	 **/
+	for (unsigned int i=0; i<state.myAnts.size(); i++)
+	{
+		Element.loc = state.myAnts[i];
+		state.grid[Element.loc.row][Element.loc.col].border = 1;
+		findBorder.push(Element);
+	}
+
+
+	while (!findBorder.empty()) {
+		Element = findBorder.front();
+		findBorder.pop();
+		Element.depth++;
+
+		if (Element.depth == steps)
+			return;
+
+		for( int d=0; d<TDIRECTIONS; d++)
+		{
+			nLoc = state.getLocation( Element.loc, d );
+
+			if (state.grid[nLoc.row][nLoc.col].isWater == false &&
+				state.grid[nLoc.row][nLoc.col].border == 0)
+			{
+				state.grid[nLoc.row][nLoc.col].border = 1;
+				Element.loc = nLoc;
+				findBorder.push(Element);
+			}
+		}
 	}
 }
 

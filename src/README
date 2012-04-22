@@ -52,7 +52,19 @@ n este cel anterior.
 
 
 	exploreMap();
-		-
+		-	pornesc un BFS din fiecare furnica pentru a gasi a 11-cea pozitie pe
+		care poate ajunge furnica , si care are suma cea mai mare.
+		SUM = suma dintre toate posibilitatile de a muta de pe pozitia 10 pe pozitia 11.
+		(in principiu sunt 3 zone)
+
+		compar toate sumele de pe pozitiile 11 si ma duc catre pozitia ce are suma
+		maxima
+
+
+		- complexitate O(N^2) unde N ~= 11 - pentru 1 furnica
+		- complexitate O(M *N^2) pentru M furnici
+
+
 
 
 

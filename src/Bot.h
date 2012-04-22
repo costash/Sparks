@@ -25,6 +25,8 @@ struct Bot
 	void getToBorder();
 
 	void sendToBorder();
+
+	void findBorders();
 };
 
 #endif //BOT_H_
