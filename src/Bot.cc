@@ -1,6 +1,7 @@
 #include "Bot.h"
 #include "BfsQueueElement.h"
 #include <time.h>
+#include <string.h>
 
 using namespace std;
 
