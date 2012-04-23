@@ -22,11 +22,15 @@ struct Bot
 
     void endTurn();     //indicates to the engine that it has made its moves
 
-	void getToBorder();
+    void getToBorder(); //move closest ant to border
 
+<<<<<<< HEAD
 	void sendToBorder();
 
 	void findBorders();
+=======
+    void sendToBorder();//move remaining ants to border
+>>>>>>> ec7e482538104353b9d54f054e613460c675be13
 };
 
 #endif //BOT_H_

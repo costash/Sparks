@@ -25,6 +25,17 @@ drept *necunoscute*, sau catre unele vizitate cel mai de de mult timp.
         Pentru aparare, trimitem furnici catre zone numite Borders (spatii
 stramte), folosind tot un BFS
 
+    state.newTurn();
+        - Initializeaza vectorul de assign task pentru fiecare furnica cu 0
+
+    state.updateHistory();
+        - Incrementeaza cu 1 valoarea fiecarui square de pe harta atat timp cat
+            nu a mai fost vizitat
+
+    state.setReachableTiles();
+        - seteaza fiecare squere din aria vizuala a unei furnici cu 0
+        - utilizat pentru functia de exploreMap
+
 
     **Complexitate
 
@@ -38,19 +49,20 @@ de mancare vizibile.
 lor fiind O(n^2 * m), unde m este numarul de furnici pentru care se face BFS, iar
 n este cel anterior.
 
+            exploreMap();
+        - pornesc un BFS din fiecare furnica pentru a gasi a 11-cea pozitie pe
+        care poate ajunge furnica , si care are suma cea mai mare.
+        SUM = suma dintre toate posibilitatile de a muta de pe pozitia 10 pe pozitia 11.
+        (in principiu sunt 3 zone)
 
-	state.newTurn();
-		- 	Initializeaza vectorul de assign task pentru fiecare furnica cu 0
-
-	state.updateHistory();
-		-	Incrementeaza cu 1 valoarea fiecarui square de pe harta atat timp cat
-			nu a mai fost vizitat
-
-	state.setReachableTiles();
-		-	seteaza fiecare squere din aria vizuala a unei furnici cu 0
-		-	utilizat pentru functia de exploreMap
+        compar toate sumele de pe pozitiile 11 si ma duc catre pozitia ce are suma
+        maxima
 
 
+        - complexitate O(N^2) unde N ~= 11 - pentru 1 furnica
+        - complexitate O(M *N^2) pentru M furnici
+
+<<<<<<< HEAD
 	exploreMap();
 		-	pornesc un BFS din fiecare furnica pentru a gasi a 11-cea pozitie pe
 		care poate ajunge furnica , si care are suma cea mai mare.
@@ -82,7 +94,26 @@ n este cel anterior.
 		complexitatea O ((m1+m2) * N ^2) unde m1+m2 = toate furnicile vizibile pe harta
 
 		Algoritm tip Kamikaze - castigator doar pe 2 harti din 4
+=======
 
+    getToBorder();
+        - un bfs porniti din toate furnicile vizibile pe harta, toate furnicile mele
+        cat si cele inamice.
+        - furnica mea - are valoarea 1 si indicele de vizitat 1
+        - furncica inamica - valoarea 2 si indice de viziatat 2
+        - fac o intersectie de BFS-uri pentru a depista borders
+        - la intersectia de BFS un square (grid.square) devine 3 ce reprezinta BORDERWIDTHS
+        - la intalnirea unui border cea mai apropiata furnica se duce catre acesta
+        - astfel se incearca alungarea inamicului cat mai departe
+        - sideEffect : furnicile vor ataca 1 vs 1 si vor muri ambele
+        - sideEffect : furnicile inamice se vor retrage si voi avea posibilitatea de a
+            aduna mai multe resurse mai repede decat inamicul pentru al omora
+
+
+        complexitatea O ((m1+m2) * N ^2) unde m1+m2 = toate furnicile vizibile pe harta
+>>>>>>> ec7e482538104353b9d54f054e613460c675be13
+
+        Algoritm tip Kamikaze - castigator doar pe 2 harti din 4
 
 
 

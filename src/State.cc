@@ -21,12 +21,14 @@ void State::setup()
 {
     grid = vector<vector<Square> >(rows, vector<Square>(cols, Square()));
 
-	/** Initialize the incremental history for every tile **/
+    /** Initialize the incremental history for every tile **/
     initHistory();
 
     /** File Debugging clear **/
-	FILE *out  = fopen("z_info.txt","w");
-	fclose(out);
+    #ifdef DEBUG
+    FILE *out  = fopen("z_info.txt","w");
+    fclose(out);
+    #endif
 };
 
 //resets all non-water squares to land and clears the bots ant vector
@@ -50,88 +52,95 @@ void State::reset()
 
 
 void State::initHistory() {
-    for(unsigned int i = 0; i < grid.size(); ++i )
+    for( unsigned int i = 0; i < grid.size(); ++i )
     {
-        for(unsigned int j = 0; j < grid[i].size(); ++j )
+        for( unsigned int j = 0; j < grid[i].size(); ++j )
         {
-			grid[i][j].history=0;
-		}
-	}
+            grid[i][j].history=0;
+        }
+    }
 
-	FILE *out  = fopen("moves.txt","a");
-	fprintf(out,"\n TURN : %d\n", turn);
-	fclose(out);
-
+    #ifdef DEBUG
+    FILE *out  = fopen("moves.txt","a");
+    fprintf(out,"\n TURN : %d\n", turn);
+    fclose(out);
+    #endif
 }
 
 
-void State::setReachableTiles() {
-	for (unsigned int i = 0; i<grid.size(); i++)
-		for (unsigned int j = 0; j<grid[i].size(); j++)
-			if (grid[i][j].isVisible)
-					grid[i][j].history = 0;
+void State::setReachableTiles()
+{
+    for ( unsigned int i = 0; i<grid.size(); i++)
+        for ( unsigned int j = 0; j<grid[i].size(); j++)
+            if (grid[i][j].isVisible)
+                    grid[i][j].history = 0;
 }
 
 
 void State::updateHistory() {
-    for(unsigned int i = 0; i < grid.size(); ++i )
-        for(unsigned int j = 0; j < grid[i].size(); ++j ) {
-				if(grid[i][j].isWater == false)
-					grid[i][j].history++;
-				grid[i][j].border=0;
+    for( unsigned int i = 0; i < grid.size(); ++i )
+        for( unsigned int j = 0; j < grid[i].size(); ++j ) {
+                if(grid[i][j].isWater == false)
+                    grid[i][j].history++;
+                grid[i][j].border=0;
         }
 }
 
 void State::newTurn() {
-   	used.assign( myAnts.size(), 0 );    // init with 0 the used vector
+    used.assign( myAnts.size(), 0 );    // init with 0 the used vector
 }
 
 
 void State::printHistory() {
-	FILE *out = fopen("z_map.txt","w");
+    FILE *out = fopen("z_map.txt","w");
 
-    for( int i = 0; i < rows; ++i ) {
-		fprintf(out,"\n");
-        for( int j = 0; j < cols; ++j ) {
-        	if (grid[i][j].ant == 0)
-				fprintf(out,"A");
-        	else
-        	if (grid[i][j].isWater == true)
-				fprintf(out,"W");
-        	else
-        	if (grid[i][j].isFood == true)
-				fprintf(out,"F");
-			else
-			if (grid[i][j].isHill == true)
-				fprintf(out,"M");
-			else
-				if(grid[i][j].history > 10)
-				fprintf(out,"U");
-				else
-				fprintf(out,"%d",grid[i][j].history);
-				fprintf(out," ");
+    for( int i = 0; i < rows; ++i )
+    {
+        fprintf(out,"\n");
+        for( int j = 0; j < cols; ++j )
+        {
+            if (grid[i][j].ant == 0)
+                fprintf(out,"A");
+            else
+            if (grid[i][j].isWater == true)
+                fprintf(out,"W");
+            else
+            if (grid[i][j].isFood == true)
+                fprintf(out,"F");
+            else
+            if (grid[i][j].isHill == true)
+                fprintf(out,"M");
+            else
+                if(grid[i][j].history > 10)
+                fprintf(out,"U");
+                else
+                fprintf(out,"%d",grid[i][j].history);
+                fprintf(out," ");
         }
     }
     fflush(out);
     fclose(out);
 }
 
-void State::printBorders() {
-	FILE *outB  = fopen("z_border.txt", "a");
+void State::printBorders()
+{
+    FILE *outB  = fopen("z_border.txt", "a");
 
-	int i, j;
-	fprintf(outB, "Turn %d \n\n\n", turn);
-	for (i=0; i<rows; i++) {
-		for (j=0; j<cols; j++) {
-			if (grid[i][j].ant == 0)
-				fprintf(outB, "A ");
-			else
-				fprintf(outB, "%d ", grid[i][j].border);
-		}
-		fprintf(outB, "\n");
-	}
-	fflush(outB);
-	fclose(outB);
+    int i, j;
+    fprintf(outB, "Turn %d \n\n\n", turn);
+    for (i = 0; i < rows; i++)
+    {
+        for (j = 0; j < cols; j++)
+        {
+            if (grid[i][j].ant == 0)
+                fprintf(outB, "A ");
+            else
+                fprintf(outB, "%d ", grid[i][j].border);
+        }
+        fprintf(outB, "\n");
+    }
+    fflush(outB);
+    fclose(outB);
 
 }
 

@@ -14,8 +14,8 @@ struct Square
     int lastVisit;  //-1 if never visited; 0 if ant is there; other positive values
     std::vector<int> deadAnts;
 
-	int history;
-	int border;
+    int history;
+    int border;
 
     Square()
     {
