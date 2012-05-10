@@ -94,9 +94,8 @@ struct State
     void setReachableTiles();
     void printHistory();
     void printBorders();
-
-
-
+	void visibleBorder();
+    void printInfo();
 
 
     void updateLastVisit();

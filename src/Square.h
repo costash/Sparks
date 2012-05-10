@@ -9,13 +9,15 @@
 struct Square
 {
     bool isVisible, isWater, isHill, isFood;
-    int ant, hillPlayer, indexAnt;  //indexAnt is index for myAnts vector
+    int ant, hillPlayer;
 
-    int lastVisit;  //-1 if never visited; 0 if ant is there; other positive values
+    int indexAnt;	//indexAnt is index for myAnts vector
+    int lastVisit;	//-1 if never visited; 0 if ant is there; other positive values
     std::vector<int> deadAnts;
 
     int history;
     int border;
+    int info;
 
     Square()
     {
@@ -26,6 +28,7 @@ struct Square
     //resets the information for the square except water information
     void reset()
     {
+    	indexAnt = -1;
         isVisible = 0;
         isHill = 0;
         isFood = 0;

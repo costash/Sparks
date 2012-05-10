@@ -1,10 +1,10 @@
 /**Echipa: Sparks
  * Membri:
- *      Serban-Radoi Constantin (capitan)
- *      Parcalabescu Maria
- *      Oncioiu Raluca
- *      Ivanica Gabriel
- * Etapa3: 22.04.2012
+	 *      Ivanica Gabriel
+	 *      Serban-Radoi Constantin (capitan)
+	 *      Parcalabescu Maria
+	 *      Oncioiu Raluca
+ * Etapa4: 10.05.2012
  */
 
     **Abordare algoritmica
@@ -171,27 +171,28 @@ botului nostru. Ne-am folosit si de ideea de a trimite furnicile catre borders.
 
     **Contributiile fiecarui membru al echipei
 
+        Ivanica Gabriel:
+
+- implementat solutia Kamikaze - actuala
+- implementat exploreMap() , getBorders(), si restul functiilor necesare
+- research algoritmi si idei de implementare
+
         Serban-Radoi Constantin (capitan):
 
-- am implementat exploreMap() intai random, apoi cu un pseudo-BFS
-- am facut ca vectorul used din exploreFood() sa poata fi folosit si la
+- implementat exploreMap() intai random, apoi cu un pseudo-BFS
+- facut ca vectorul used din exploreFood() sa poata fi folosit si la
 iesirea din functie, deoarece multe dintre furnici stateau pe loc; astfel, s-a
 dublat numarul de furnici per fiecare harta folosind cu functia exploreMap()
 pentru furnicile care nu erau _used_
 
         Maria Parcalabescu:
 
-- am implementat functia exploreFood(), prin imbunatatirea BFS-ului de la care
+- implementat functia exploreFood(), prin imbunatatirea BFS-ului de la care
 s-a pornit
 
         Oncioiu Raluca:
 
-- am implementat in paralel functiile exploreFood() si exploreMap(); in cele din
+- implementat in paralel functiile exploreFood() si exploreMap(); in cele din
 urma, am renuntat la codul meu, deoarece nu genera suficiente furnici
-- am scris README-ul
 
-        Ivanica Gabriel:
-
-- implementat exploreMap() , getBorders(), si restul functiilor necesare
-- research algoritmi si idei de implementare
 

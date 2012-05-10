@@ -24,13 +24,11 @@ struct Bot
 
     void getToBorder(); //move closest ant to border
 
-<<<<<<< HEAD
+	void findBorders();
+
 	void sendToBorder();
 
-	void findBorders();
-=======
-    void sendToBorder();//move remaining ants to border
->>>>>>> ec7e482538104353b9d54f054e613460c675be13
+	void sendToBorder2();
 };
 
 #endif //BOT_H_
